@@ -1,4 +1,4 @@
-defmodule BrainTrainWeb.PageController do
+defmodule BrainTrainWeb.HomePageController do
   use BrainTrainWeb, :controller
 
   def index(conn, _params) do
