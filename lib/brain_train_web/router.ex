@@ -17,7 +17,9 @@ defmodule BrainTrainWeb.Router do
   scope "/", BrainTrainWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/", HomePageController, :index
+
+    live "/speedsort", Live.SpeedSortLive.Index
   end
 
   # Other scopes may use custom stacks.
