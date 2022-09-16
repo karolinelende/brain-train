@@ -40,12 +40,16 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
 
         {:error, message} ->
           socket
+          |> clear_flash(:info)
           |> put_flash(:error, message)
           |> assign(score: socket.assigns.score - 10)
           |> assign(numbers: SpeedSort.generate_list_of_numbers())
 
         new_numbers ->
-          assign(socket, numbers: new_numbers)
+          socket
+          |> assign(numbers: new_numbers)
+          |> clear_flash(:info)
+          |> clear_flash(:error)
       end
 
     {:noreply, socket}
