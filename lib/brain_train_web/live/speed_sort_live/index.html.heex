@@ -1,3 +1,5 @@
-<div> Temperature is: 
-<%= @temperature %>
-</div>
+<%= if @play do %>
+    <SpeedSortComponents.playing_game {assigns_to_attributes(assigns)} />
+<% else %>
+    <SpeedSortComponents.start_game {assigns_to_attributes(assigns)} />
+<% end %>
