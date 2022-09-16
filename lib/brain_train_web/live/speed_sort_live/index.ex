@@ -14,8 +14,6 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
       |> assign(play: false)
       |> assign(now: DateTime.utc_now())
 
-    IO.inspect(socket)
-
     {:ok, socket}
   end
 
@@ -31,23 +29,24 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
     {:noreply, socket}
   end
 
-  def handle_event("rank-number", %{"index" => index, "number" => number}, socket) do
+  def handle_event("rank-number", %{"number" => number}, socket) do
     socket =
-      case SpeedSort.check_next_in_list(
-             socket.assigns.numbers,
-             String.to_integer(number),
-             String.to_integer(index)
-           ) do
-        {:ok, new_numbers} ->
-          assign(socket, numbers: new_numbers)
+      case SpeedSort.check_next_in_list(socket.assigns.numbers, String.to_integer(number)) do
+        {:ok, message} ->
+          socket
+          |> put_flash(:info, message)
+          |> assign(score: socket.assigns.score + 10)
+          |> assign(numbers: SpeedSort.generate_list_of_numbers())
 
         {:error, message} ->
           socket
           |> put_flash(:error, message)
           |> assign(score: socket.assigns.score - 10)
-      end
+          |> assign(numbers: SpeedSort.generate_list_of_numbers())
 
-    IO.inspect(socket)
+        new_numbers ->
+          assign(socket, numbers: new_numbers)
+      end
 
     {:noreply, socket}
   end

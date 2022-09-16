@@ -11,8 +11,8 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
   def playing_game(assigns) do
     ~H"""
     <div> The numbers are:
-    <%= for {number, index} <- Enum.with_index(@numbers) do %>
-    <button phx-click="rank-number" phx-value-number={number} phx-value-index={index}> <%= number %> </button>
+    <%= for number <- @numbers do %>
+    <button phx-click="rank-number" phx-value-number={number}> <%= number %> </button>
     <% end %>
     </div>
 
