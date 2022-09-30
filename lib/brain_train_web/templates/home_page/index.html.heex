@@ -1,5 +1,5 @@
 <section class="phx-hero">
-  <h1>Welcome to BrainTrain! 🧠 🚂 </h1>
+  <h1>Welcome to BrainTrain! 🧠 🚂</h1>
   <p>It's good to have you onboard.</p>
 </section>
 
@@ -7,9 +7,11 @@
   <article class="column">
     <h2>Games</h2>
     <ul>
-      <li><%= link "SpeedSort", to: Routes.live_path(@conn, BrainTrainWeb.Live.SpeedSortLive.Index) %></li>
       <li>
-      More coming soon ...
+        <%= link("SpeedSort", to: Routes.live_path(@conn, BrainTrainWeb.Live.SpeedSortLive.Index)) %>
+      </li>
+      <li>
+        More coming soon ...
       </li>
     </ul>
   </article>
