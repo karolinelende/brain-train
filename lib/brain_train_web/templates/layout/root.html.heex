@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<script src="https://cdn.lordicon.com/pzdvqjsp.js">
+</script>
+
+<html lang="en" class="h-full bg-gray-100">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -15,23 +18,61 @@
     >
     </script>
   </head>
-  <body class="pt-24 flex flex-col h-full">
+
+  <body class="h-full">
     <header>
-      <section class="container">
-        <nav class="fixed top-0 left-0 right-0 z-30 bg-white shadow">
-           <div class="container mx-auto px-6 py-3 md:flex md:justify-between md:items-center">
-          <div class="flex justify-between items-center">
-            <h1><%= link("BrainTrain", to: Routes.home_page_path(@conn, :index)) %></h1>
+      <nav class="bg-gray-800">
+        <div class="mx-auto px-2 sm:px-6 lg:px-8">
+          <div class="relative flex h-16 items-center justify-between">
+            <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+              <div class="flex flex-shrink-0 items-center">
+                <lord-icon
+                  src="https://cdn.lordicon.com/lgbthquq.json"
+                  trigger="hover"
+                  stroke="70"
+                  colors="primary:#c7166f,secondary:#ffffff"
+                  style="width:35px;height:35px"
+                >
+                </lord-icon>
+                <lord-icon
+                  src="https://cdn.lordicon.com/dhyzxfmm.json"
+                  trigger="hover"
+                  stroke="70"
+                  colors="primary:#c7166f,secondary:#ffffff"
+                  style="width:35px;height:35px"
+                >
+                </lord-icon>
+              </div>
+              <div class="hidden sm:ml-6 sm:block">
+                <div class="flex space-x-4">
+                  <a
+                    href={Routes.home_page_path(@conn, :index)}
+                    class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium"
+                    aria-current="page"
+                  >
+                    BrainTrain
+                  </a>
+
+                  <a
+                    href="#"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    TODO Login
+                  </a>
+                  <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+                    <a
+                      href={Routes.live_dashboard_path(@conn, :home)}
+                      class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                    >
+                      LiveDashboard
+                    </a>
+                  <% end %>
+                </div>
+              </div>
+            </div>
           </div>
-          <ul>
-            <li>Todo login</li>
-            <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-              <li><%= link("LiveDashboard", to: Routes.live_dashboard_path(@conn, :home)) %></li>
-            <% end %>
-          </ul>
-          </div>
-        </nav>
-      </section>
+        </div>
+      </nav>
     </header>
     <%= @inner_content %>
   </body>
