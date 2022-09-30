@@ -4,24 +4,29 @@
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
-  margin-bottom: 20px;
   border: 1px solid transparent;
   border-radius: 4px;
 }
 .alert-info {
+  animation: fade-scale-in-out 1s;
   color: #31708f;
   background-color: #d9edf7;
   border-color: #bce8f1;
+  opacity: 0;
 }
 .alert-warning {
+  animation: fade-scale-in-out 1s;
   color: #8a6d3b;
   background-color: #fcf8e3;
   border-color: #faebcc;
+  opacity: 0;
 }
 .alert-danger {
+  animation: fade-scale-in-out 1s;
   color: #a94442;
   background-color: #f2dede;
   border-color: #ebccd1;
+  opacity: 0;
 }
 .alert p {
   margin-bottom: 0;
@@ -35,6 +40,10 @@
   margin: -1rem 0 2rem;
 }
 
+.no-alert {
+  height: 58px;
+}
+
 /* LiveView specific classes for your customization */
 .phx-no-feedback.invalid-feedback,
 .phx-no-feedback .invalid-feedback {
@@ -46,12 +55,12 @@
   transition: opacity 1s ease-out;
 }
 
-.phx-loading{
+.phx-loading {
   cursor: wait;
 }
 
 .phx-modal {
-  opacity: 1!important;
+  opacity: 1 !important;
   position: fixed;
   z-index: 1;
   left: 0;
@@ -59,7 +68,7 @@
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .phx-modal-content {
@@ -99,22 +108,55 @@
   animation: 0.2s ease-out 0s normal forwards 1 fade-out-keys;
 }
 
-@keyframes fade-in-scale-keys{
-  0% { scale: 0.95; opacity: 0; }
-  100% { scale: 1.0; opacity: 1; }
+@keyframes fade-scale-in-out {
+  0%,
+  100% {
+    scale: 0.95;
+    opacity: 0;
+  }
+  30%,
+  50% {
+    scale: 1;
+    opacity: 1;
+  }
 }
 
-@keyframes fade-out-scale-keys{
-  0% { scale: 1.0; opacity: 1; }
-  100% { scale: 0.95; opacity: 0; }
+@keyframes fade-in-scale-keys {
+  0% {
+    scale: 0.95;
+    opacity: 0;
+  }
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
 }
 
-@keyframes fade-in-keys{
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+@keyframes fade-out-scale-keys {
+  0% {
+    scale: 1;
+    opacity: 1;
+  }
+  100% {
+    scale: 0.95;
+    opacity: 0;
+  }
 }
 
-@keyframes fade-out-keys{
-  0% { opacity: 1; }
-  100% { opacity: 0; }
+@keyframes fade-in-keys {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out-keys {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }

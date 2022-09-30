@@ -23,6 +23,10 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
     {:noreply, socket}
   end
 
+  def handle_info(:clear_flash, socket) do
+    {:noreply, clear_flash(socket)}
+  end
+
   def handle_event("start_game", _, socket) do
     socket = assign(socket, play: true, score: 0)
 
@@ -30,6 +34,8 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   end
 
   def handle_event("rank-number", %{"number" => number}, socket) do
+    Process.send_after(self(), :clear_flash, 1500)
+
     socket =
       case SpeedSort.check_next_in_list(socket.assigns.numbers, String.to_integer(number)) do
         {:ok, message} ->
@@ -40,7 +46,6 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
 
         {:error, message} ->
           socket
-          |> clear_flash(:info)
           |> put_flash(:error, message)
           |> assign(score: socket.assigns.score - 10)
           |> assign(numbers: SpeedSort.generate_list_of_numbers())
@@ -48,8 +53,6 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
         new_numbers ->
           socket
           |> assign(numbers: new_numbers)
-          |> clear_flash(:info)
-          |> clear_flash(:error)
       end
 
     {:noreply, socket}
