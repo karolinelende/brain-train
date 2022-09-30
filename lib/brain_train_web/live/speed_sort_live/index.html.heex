@@ -1,5 +1,7 @@
+<div class="pt-16 pb-32">
 <%= if @play do %>
   <SpeedSortComponents.playing_game {assigns_to_attributes(assigns)} />
 <% else %>
   <SpeedSortComponents.start_game {assigns_to_attributes(assigns)} />
 <% end %>
+</div>

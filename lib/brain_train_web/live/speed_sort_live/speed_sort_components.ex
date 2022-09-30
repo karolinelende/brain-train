@@ -3,7 +3,12 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
 
   def start_game(assigns) do
     ~H"""
-    <button phx-click="start_game">Start game</button>
+    <button
+      class="font-medium bg-gray-800 text-2xl rounded-lg py-4 px-4 text-white hover:bg-pink-800"
+      phx-click="start_game"
+    >
+      Start game
+    </button>
     """
   end
 
