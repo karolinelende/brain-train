@@ -1,26 +1,30 @@
-<section>
-  <h1>Welcome to BrainTrain! 🧠 🚂</h1>
-  <p>It's good to have you onboard.</p>
-</section>
+<div class="pt-16 pb-32">
+  <div>
+    <h1 class="font-medium text-5xl text-gray-800">Welcome to BrainTrain! 🧠 🚂</h1>
+    <p class="py-4 text-3xl">It's good to have you onboard.</p>
+  </div>
 
-<section>
-  <article>
-    <h2>Games</h2>
-    <ul>
-      <li>
-        <%= link("SpeedSort", to: Routes.live_path(@conn, BrainTrainWeb.Live.SpeedSortLive.Index)) %>
-      </li>
-      <li>
-        More coming soon ...
-      </li>
-    </ul>
-  </article>
-  <article>
-    <h2>Players</h2>
-    <ul>
-      <li>
-        No one here yet
-      </li>
-    </ul>
-  </article>
-</section>
+  <section class="flex justify-between mt-8">
+    <div>
+      <h2 class="font-medium text-2xl text-pink-800 py-4">Games</h2>
+      <ul>
+        <li class="underline py-2 hover:text-pink-800 ">
+          <%= link("SpeedSort",
+            to: Routes.live_path(@conn, BrainTrainWeb.Live.SpeedSortLive.Index)
+          ) %>
+        </li>
+        <li class="py-2">
+          More coming soon...
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="font-medium text-2xl text-pink-800 py-4">Players</h2>
+      <ul>
+        <li class="py-2">
+          No one here yet
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>

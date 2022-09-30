@@ -1,4 +1,4 @@
-<main role="main" class="container px-4">
+<main role="main" class="flex justify-center m-16 bg-white rounded-lg drop-shadow-md">
   <%= cond do %>
     <% live_flash(@flash, :info) -> %>
       <p class="alert alert-info" role="alert" phx-click="lv:clear-flash" phx-value-key="info">
