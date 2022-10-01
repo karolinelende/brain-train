@@ -13,6 +13,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
       |> assign(numbers: numbers)
       |> assign(play: false)
       |> assign(now: DateTime.utc_now())
+      |> assign(clicks: 0)
 
     {:ok, socket}
   end
@@ -33,26 +34,34 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
     {:noreply, socket}
   end
 
-  def handle_event("rank-number", %{"number" => number}, socket) do
-    Process.send_after(self(), :clear_flash, 1500)
-
+  def handle_event(
+        "rank-number",
+        %{"index" => index},
+        %{assigns: %{clicks: clicks, score: score}} = socket
+      ) do
     socket =
-      case SpeedSort.check_next_in_list(socket.assigns.numbers, String.to_integer(number)) do
-        {:ok, message} ->
-          socket
-          |> put_flash(:info, message)
-          |> assign(score: socket.assigns.score + 10)
-          |> assign(numbers: SpeedSort.generate_list_of_numbers())
+      cond do
+        clicks == SpeedSort.list_length() - 1 ->
+          Process.send_after(self(), :clear_flash, 1000)
 
-        {:error, message} ->
           socket
-          |> put_flash(:error, message)
-          |> assign(score: socket.assigns.score - 10)
+          |> put_flash(:info, "Good job!")
+          |> assign(score: score + 10)
           |> assign(numbers: SpeedSort.generate_list_of_numbers())
+          |> assign(clicks: 0)
 
-        new_numbers ->
+        String.to_integer(index) == clicks ->
           socket
-          |> assign(numbers: new_numbers)
+          |> assign(clicks: clicks + 1)
+
+        true ->
+          Process.send_after(self(), :clear_flash, 1000)
+
+          socket
+          |> put_flash(:error, "Wrong number!")
+          |> assign(score: score - 10)
+          |> assign(numbers: SpeedSort.generate_list_of_numbers())
+          |> assign(clicks: 0)
       end
 
     {:noreply, socket}

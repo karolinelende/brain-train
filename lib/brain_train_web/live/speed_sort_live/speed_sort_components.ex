@@ -15,13 +15,27 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
   def playing_game(assigns) do
     ~H"""
     <div>
-      The numbers are:
-      <%= for number <- @numbers do %>
-        <button phx-click="rank-number" phx-value-number={number}><%= number %></button>
-      <% end %>
+      <div class="py-4">The numbers are:</div>
+      <div class="grid grid-cols-3 gap-6">
+        <%= for {number, index} <- @numbers do %>
+          <%= if @clicks > index do %>
+            <div class="w-16 h-16"></div>
+          <% else %>
+            <div>
+              <button
+                class="font-medium bg-red-600 w-16 h-16 text-2xl rounded-lg text-white"
+                phx-click="rank-number"
+                phx-value-index={index}
+              >
+                <%= number %>
+              </button>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
     </div>
 
-    <div>The time is: <%= @now %></div>
+    <div class="py-8">The time is: <%= @now %></div>
     """
   end
 
