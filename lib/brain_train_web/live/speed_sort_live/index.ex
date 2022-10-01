@@ -4,23 +4,27 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   alias BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents
 
   def mount(_params, _session, socket) do
-    if connected?(socket), do: Process.send_after(self(), :update_now, 1000)
-
     numbers = SpeedSort.generate_list_of_numbers()
 
     socket =
       socket
       |> assign(numbers: numbers)
       |> assign(play: false)
-      |> assign(now: DateTime.utc_now())
       |> assign(clicks: 0)
 
     {:ok, socket}
   end
 
-  def handle_info(:update_now, socket) do
-    Process.send_after(self(), :update_now, 1000)
-    socket = assign(socket, :now, DateTime.utc_now() |> Timex.set(microsecond: 0))
+  def handle_info(:update_timer, socket) do
+    Process.send_after(self(), :update_timer, 1000)
+
+    socket =
+      assign(
+        socket,
+        :elapsed_time,
+        DateTime.diff(DateTime.utc_now() |> Timex.set(microsecond: 0), socket.assigns.start_time)
+      )
+
     {:noreply, socket}
   end
 
@@ -29,7 +33,14 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   end
 
   def handle_event("start_game", _, socket) do
-    socket = assign(socket, play: true, score: 0)
+    Process.send_after(self(), :update_timer, 1000)
+
+    socket =
+      socket
+      |> assign(play: true)
+      |> assign(score: 0)
+      |> assign(start_time: DateTime.utc_now())
+      |> assign(elapsed_time: 0)
 
     {:noreply, socket}
   end
