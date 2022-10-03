@@ -4,26 +4,35 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   alias BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents
 
   def mount(_params, _session, socket) do
-    numbers = SpeedSort.generate_list_of_numbers()
-
     socket =
       socket
-      |> assign(numbers: numbers)
       |> assign(play: false)
-      |> assign(clicks: 0)
+      |> assign(score: nil)
+      |> assign(message: nil)
 
     {:ok, socket}
   end
 
   def handle_info(:update_timer, socket) do
-    Process.send_after(self(), :update_timer, 1000)
+    remaining_time =
+      60 -
+        DateTime.diff(
+          DateTime.utc_now() |> Timex.set(microsecond: 0),
+          socket.assigns.game_start_time
+        )
 
     socket =
-      assign(
-        socket,
-        :elapsed_time,
-        DateTime.diff(DateTime.utc_now() |> Timex.set(microsecond: 0), socket.assigns.start_time)
-      )
+      if remaining_time > 0 do
+        Process.send_after(self(), :update_timer, 1000)
+        assign(socket, :remaining_time, remaining_time)
+      else
+        Process.send_after(self(), :clear_flash, 1000)
+
+        socket
+        |> assign(message: "Game over")
+        |> assign(play: false)
+        |> assign(clicks: 0)
+      end
 
     {:noreply, socket}
   end
@@ -35,12 +44,17 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   def handle_event("start_game", _, socket) do
     Process.send_after(self(), :update_timer, 1000)
 
+    numbers = SpeedSort.generate_list_of_numbers()
+
     socket =
       socket
+      |> assign(numbers: numbers)
+      |> assign(clicks: 0)
       |> assign(play: true)
       |> assign(score: 0)
-      |> assign(start_time: DateTime.utc_now())
-      |> assign(elapsed_time: 0)
+      |> assign(game_start_time: DateTime.utc_now())
+      |> assign(round_start_time: DateTime.utc_now())
+      |> assign(remaining_time: 60)
 
     {:noreply, socket}
   end
@@ -55,10 +69,17 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
         clicks == SpeedSort.list_length() - 1 ->
           Process.send_after(self(), :clear_flash, 1000)
 
+          elapsed_time =
+            DateTime.diff(
+              DateTime.utc_now() |> Timex.set(microsecond: 0),
+              socket.assigns.round_start_time
+            )
+
           socket
           |> put_flash(:info, "Good job!")
-          |> assign(score: score + 10)
+          |> assign(score: round(score + 10 + 20 / elapsed_time))
           |> assign(numbers: SpeedSort.generate_list_of_numbers())
+          |> assign(round_start_time: DateTime.utc_now())
           |> assign(clicks: 0)
 
         String.to_integer(index) == clicks ->
@@ -70,7 +91,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
 
           socket
           |> put_flash(:error, "Wrong number!")
-          |> assign(score: score - 10)
+          |> assign(score: score - 5)
           |> assign(numbers: SpeedSort.generate_list_of_numbers())
           |> assign(clicks: 0)
       end
