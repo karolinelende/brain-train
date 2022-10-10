@@ -13,6 +13,27 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
       <div class="font-medium bg-emerald-700 text-2xl rounded-lg py-4 px-4 mt-8 text-white">
         Your score: <%= @score %>
       </div>
+    <% else %>
+      <%= if is_nil(@name) do %>
+        <div>
+          <form phx-submit="set_name">
+            <label for="name" class="block text-sm font-medium text-gray-700">Your name</label>
+            <div class="flex">
+              <div class="relative mt-1 rounded-md shadow-sm">
+                <input
+                  class="block w-full rounded-md border-gray-300 pl-7 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  type="text"
+                  name="name"
+                  value={@name}
+                />
+              </div>
+              <button type="submit" class="p-2">Save</button>
+            </div>
+          </form>
+        </div>
+      <% else %>
+        <div>Let's go, <%= @name %>!</div>
+      <% end %>
     <% end %>
 
     <button
@@ -25,6 +46,17 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
         Start game
       <% end %>
     </button>
+
+    <div>
+      <table>
+        <th>Name</th>
+        <th>Score</th>
+        <%= for score <- @scores do %>
+          <td><%= score.name %></td>
+          <td><%= score.score %></td>
+        <% end %>
+      </table>
+    </div>
     """
   end
 

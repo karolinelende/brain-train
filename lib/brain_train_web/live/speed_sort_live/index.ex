@@ -2,20 +2,26 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   use Phoenix.LiveView, layout: {BrainTrainWeb.LayoutView, "live.html"}
   alias BrainTrain.SpeedSort
   alias BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents
+  alias BrainTrain.{Score, Scores}
+  alias BrainTrain.Repo
 
   def mount(_params, _session, socket) do
+    scores = Scores.get_scores_for_game("speed_sort") |> IO.inspect()
+
     socket =
       socket
       |> assign(play: false)
       |> assign(score: nil)
       |> assign(message: nil)
+      |> assign(name: nil)
+      |> assign(scores: scores)
 
     {:ok, socket}
   end
 
   def handle_info(:update_timer, socket) do
     remaining_time =
-      60 -
+      10 -
         DateTime.diff(
           DateTime.utc_now() |> Timex.set(microsecond: 0),
           socket.assigns.game_start_time
@@ -27,6 +33,13 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
         assign(socket, :remaining_time, remaining_time)
       else
         Process.send_after(self(), :clear_flash, 1000)
+
+        %Score{
+          name: socket.assigns.name,
+          score: socket.assigns.score,
+          game: "speed_sort"
+        }
+        |> Repo.insert()
 
         socket
         |> assign(message: "Game over")
@@ -57,6 +70,10 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
       |> assign(remaining_time: 60)
 
     {:noreply, socket}
+  end
+
+  def handle_event("set_name", %{"name" => name}, socket) do
+    {:noreply, assign(socket, name: name)}
   end
 
   def handle_event(
