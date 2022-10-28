@@ -6,7 +6,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   alias BrainTrain.Repo
 
   def mount(_params, _session, socket) do
-    scores = Scores.get_scores_for_game("speed_sort") |> IO.inspect()
+    scores = Scores.get_scores_for_game("speed_sort")
 
     socket =
       socket

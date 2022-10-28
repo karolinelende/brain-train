@@ -49,11 +49,15 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
 
     <div>
       <table>
-        <th>Name</th>
-        <th>Score</th>
+        <tr>
+          <th>Name</th>
+          <th>Score</th>
+        </tr>
         <%= for score <- @scores do %>
-          <td><%= score.name %></td>
-          <td><%= score.score %></td>
+          <tr>
+            <td><%= score.name %></td>
+            <td><%= score.score %></td>
+          </tr>
         <% end %>
       </table>
     </div>
