@@ -47,27 +47,23 @@
               </div>
               <div class="hidden sm:ml-6 sm:block">
                 <div class="flex space-x-4">
-                  <.link
-                    href={Routes.home_page_path(@conn, :index)}
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                    aria-current="page"
-                  >
-                    BrainTrain
-                  </.link>
-
-                  <.link
-                    href={Routes.live_path(@conn, BrainTrainWeb.Live.SpeedSortLive.Index)}
-                    class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    SpeedSort
-                  </.link>
+                  <%= active_link(@conn, "BrainTrain",
+                    class:
+                      "hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium",
+                    to: Routes.home_page_path(@conn, :index)
+                  ) %>
+                  <%= active_link(@conn, "SpeedSort",
+                    class:
+                      "hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium",
+                    to: Routes.live_path(@conn, BrainTrainWeb.Live.SpeedSortLive.Index)
+                  ) %>
                   <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-                    <a
+                    <.link
                       href={Routes.live_dashboard_path(@conn, :home)}
                       class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     >
                       LiveDashboard
-                    </a>
+                    </.link>
                   <% end %>
                 </div>
               </div>
