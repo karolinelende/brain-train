@@ -20,7 +20,8 @@ defmodule BrainTrainWeb.Endpoint do
     at: "/",
     from: :brain_train,
     gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+    only:
+      ~w(assets fonts images favicon.ico apple-touch-icon.png favicon-32x32.png favicon-16x16.png android-chrome-192x192.png android-chrome-512x512.png manifest.json robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
