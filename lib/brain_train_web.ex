@@ -86,6 +86,8 @@ defmodule BrainTrainWeb do
 
   defp view_helpers do
     quote do
+      import Phoenix.Component
+
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
