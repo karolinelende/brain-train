@@ -3,8 +3,30 @@ defmodule BrainTrain.Scores do
   alias BrainTrain.Score
   alias BrainTrain.Repo
 
+  def top_scores(number) do
+    Repo.all(from(s in Score, order_by: [desc: s.score], limit: ^number))
+  end
+
+  def maybe_append_top_score(existing_scores, new_score, rank) do
+    if length(existing_scores) < rank do
+      append_and_sort(existing_scores, new_score)
+    else
+      %{score: lowest_score} = List.last(existing_scores)
+
+      if new_score.score > lowest_score do
+        append_and_sort(existing_scores, new_score)
+      else
+        existing_scores
+      end
+    end
+  end
+
+  def append_and_sort(existing_scores, new_score) do
+    [new_score | existing_scores] |> Enum.sort_by(& &1.score, :desc)
+  end
+
   def get_scores_for_game(game) do
-    Repo.all(from s in Score, where: s.game == ^game)
+    Repo.all(from s in Score, order_by: [desc: s.score], where: s.game == ^game)
   end
 
   def insert(attrs) do

@@ -16,22 +16,47 @@ defmodule BrainTrainWeb.Live.Common.LiveComponents do
                       scope="col"
                       class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
                     >
+                      Rank
+                    </th>
+                    <th
+                      scope="col"
+                      class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                    >
                       Name
                     </th>
-                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                    <th
+                      scope="col"
+                      class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                    >
                       Score
                     </th>
+                    <%= if @all_games do %>
+                      <th
+                        scope="col"
+                        class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                      >
+                        Game
+                      </th>
+                    <% end %>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
-                  <%= for score <- @scores do %>
+                  <%= for {score, index} <- Enum.with_index(@scores) do %>
                     <tr>
+                      <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                        <%= index + 1 %>
+                      </td>
                       <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                         <%= score.name %>
                       </td>
                       <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         <%= score.score %>
                       </td>
+                      <%= if @all_games do %>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                          <%= score.game %>
+                        </td>
+                      <% end %>
                     </tr>
                   <% end %>
                 </tbody>

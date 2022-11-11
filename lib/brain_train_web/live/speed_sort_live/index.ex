@@ -5,10 +5,11 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   alias BrainTrain.Scores
 
   @game_duration 10
+  @game_title SpeedSort.db_name()
 
   def mount(_params, _session, socket) do
     if connected?(socket), do: Scores.subscribe()
-    scores = Scores.get_scores_for_game("speed_sort")
+    scores = Scores.get_scores_for_game(@game_title)
 
     socket =
       socket
@@ -45,14 +46,15 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   end
 
   def handle_info({:score_saved, score}, socket) do
-    socket = update(socket, :scores, fn scores -> [score | scores] end)
+    socket = update(socket, :scores, fn scores -> Scores.append_and_sort(scores, score) end)
+
     {:noreply, socket}
   end
 
   defp complete_game(%{assigns: %{name: name, score: score}} = socket) do
     Process.send_after(self(), :clear_flash, 1000)
 
-    %{name: name, score: score, game: SpeedSort.db_name()}
+    %{name: name, score: score, game: @game_title}
     |> Scores.insert()
 
     socket

@@ -33,7 +33,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
       <% end %>
     </button>
 
-    <LiveComponents.score_table scores={@scores} />
+    <LiveComponents.score_table scores={@scores} all_games={false} />
     """
   end
 

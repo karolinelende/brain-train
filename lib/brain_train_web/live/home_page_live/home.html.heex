@@ -9,7 +9,7 @@
       <h2 class="font-medium text-2xl text-pink-800 py-4">Games</h2>
       <ul>
         <li class="underline py-2 hover:text-pink-800">
-          <.link patch={Routes.live_path(@socket, BrainTrainWeb.Live.SpeedSortLive.Index)}>
+          <.link href={Routes.live_path(@socket, BrainTrainWeb.Live.SpeedSortLive.Index)}>
             SpeedSort
           </.link>
         </li>
@@ -27,5 +27,5 @@
       </ul>
     </div>
   </section>
-  <LiveComponents.score_table scores={@scores} />
+  <LiveComponents.score_table scores={@scores} all_games={true} />
 </div>
