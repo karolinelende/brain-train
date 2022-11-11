@@ -6,16 +6,12 @@ defmodule BrainTrainWeb.Live.HomePageLive.Home do
   alias BrainTrainWeb.Presence
 
   @high_score_length 10
-  @presence "users:presence"
 
   def mount(_params, session, socket) do
     if connected?(socket) do
       Scores.subscribe()
-
-      user = Map.get(session, "username")
-      join_session(user)
-
-      Phoenix.PubSub.subscribe(BrainTrain.PubSub, @presence)
+      Presence.join_session(Map.get(session, "username"))
+      Phoenix.PubSub.subscribe(BrainTrain.PubSub, Presence.channel_name())
     end
 
     scores = Scores.top_scores(@high_score_length)
@@ -25,19 +21,9 @@ defmodule BrainTrainWeb.Live.HomePageLive.Home do
       |> assign(scores: scores)
       |> assign(name: Map.get(session, "username"))
       |> assign(:users, %{})
-      |> handle_joins(Presence.list(@presence))
+      |> handle_joins(Presence.list(Presence.channel_name()))
 
     {:ok, socket}
-  end
-
-  defp join_session(nil), do: :ok
-
-  defp join_session(user) do
-    {:ok, _} =
-      Presence.track(self(), @presence, get_temp_id(), %{
-        name: user,
-        joined_at: :os.system_time(:seconds)
-      })
   end
 
   defp handle_joins(socket, joins) do
@@ -51,8 +37,6 @@ defmodule BrainTrainWeb.Live.HomePageLive.Home do
       assign(socket, :users, Map.delete(socket.assigns.users, user))
     end)
   end
-
-  defp get_temp_id, do: :crypto.strong_rand_bytes(5) |> Base.url_encode64() |> binary_part(0, 5)
 
   def handle_info(%Phoenix.Socket.Broadcast{event: "presence_diff", payload: diff}, socket) do
     {
@@ -73,7 +57,7 @@ defmodule BrainTrainWeb.Live.HomePageLive.Home do
   end
 
   def handle_event("set_name", %{"name" => name}, socket) do
-    join_session(name)
+    Presence.join_session(name)
     {:noreply, assign(socket, name: name)}
   end
 end
