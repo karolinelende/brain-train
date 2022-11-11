@@ -14,7 +14,7 @@ defmodule BrainTrain.Scores do
       %{score: lowest_score} = List.last(existing_scores)
 
       if new_score.score > lowest_score do
-        append_and_sort(existing_scores, new_score)
+        append_and_sort(existing_scores, new_score) |> Enum.take(rank)
       else
         existing_scores
       end
