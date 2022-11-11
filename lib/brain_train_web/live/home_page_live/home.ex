@@ -25,4 +25,8 @@ defmodule BrainTrainWeb.Live.HomePageLive.Home do
 
     {:noreply, socket}
   end
+
+  def handle_event("set_name", %{"name" => name}, socket) do
+    {:noreply, assign(socket, name: name)}
+  end
 end

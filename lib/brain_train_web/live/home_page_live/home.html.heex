@@ -4,6 +4,14 @@
     <p class="py-4 text-3xl">It's good to have you onboard.</p>
   </div>
 
+  <div class="w-1/2">
+    <%= if is_nil(@name) do %>
+      <LiveComponents.username_input name={@name} />
+    <% else %>
+      <div>Let's go, <%= @name %>!</div>
+    <% end %>
+  </div>
+
   <section class="flex justify-between mt-8">
     <div>
       <h2 class="font-medium text-2xl text-pink-800 py-4">Games</h2>
