@@ -12,6 +12,13 @@ defmodule BrainTrainWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
+  end
+
+  scope "/api", BrainTrainWeb do
+    pipe_through :api
+
+    post "/session", SessionController, :set
   end
 
   scope "/", BrainTrainWeb do

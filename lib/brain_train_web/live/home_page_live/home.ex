@@ -6,13 +6,14 @@ defmodule BrainTrainWeb.Live.HomePageLive.Home do
 
   @high_score_length 10
 
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
     if connected?(socket), do: Scores.subscribe()
     scores = Scores.top_scores(@high_score_length)
 
     socket =
       socket
       |> assign(scores: scores)
+      |> assign(name: Map.get(session, "username"))
 
     {:ok, socket}
   end

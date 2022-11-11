@@ -7,7 +7,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   @game_duration 10
   @game_title SpeedSort.db_name()
 
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
     if connected?(socket), do: Scores.subscribe()
     scores = Scores.get_scores_for_game(@game_title)
 
@@ -16,7 +16,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
       |> assign(play: false)
       |> assign(score: nil)
       |> assign(message: nil)
-      |> assign(name: nil)
+      |> assign(name: Map.get(session, "username"))
       |> assign(scores: scores)
 
     {:ok, socket}
