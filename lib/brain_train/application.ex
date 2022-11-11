@@ -14,6 +14,7 @@ defmodule BrainTrain.Application do
       BrainTrainWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: BrainTrain.PubSub},
+      BrainTrainWeb.Presence,
       # Start the Endpoint (http/https)
       BrainTrainWeb.Endpoint
       # Start a worker by calling: BrainTrain.Worker.start_link(arg)

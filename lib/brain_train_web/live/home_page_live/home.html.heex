@@ -29,9 +29,11 @@
     <div>
       <h2 class="font-medium text-2xl text-pink-800 py-4">Players</h2>
       <ul>
-        <li class="py-2">
-          No one here yet
-        </li>
+        <%= for {_id, %{name: name}} <- @users do %>
+          <li class="py-2">
+            <%= name %>
+          </li>
+        <% end %>
       </ul>
     </div>
   </section>

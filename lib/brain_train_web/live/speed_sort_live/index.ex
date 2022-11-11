@@ -3,9 +3,11 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   alias BrainTrain.SpeedSort
   alias BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents
   alias BrainTrain.Scores
+  alias BrainTrainWeb.Presence
 
   @game_duration 10
   @game_title SpeedSort.db_name()
+  @presence "users:presence"
 
   def mount(_params, session, socket) do
     if connected?(socket), do: Scores.subscribe()
@@ -82,6 +84,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   end
 
   def handle_event("set_name", %{"name" => name}, socket) do
+    join_session(name)
     {:noreply, assign(socket, name: name)}
   end
 
@@ -132,4 +135,16 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
     |> assign(numbers: SpeedSort.generate_list_of_numbers())
     |> assign(clicks: 0)
   end
+
+  defp join_session(nil), do: :ok
+
+  defp join_session(user) do
+    {:ok, _} =
+      Presence.track(self(), @presence, get_temp_id(), %{
+        name: user,
+        joined_at: :os.system_time(:seconds)
+      })
+  end
+
+  defp get_temp_id, do: :crypto.strong_rand_bytes(5) |> Base.url_encode64() |> binary_part(0, 5)
 end
