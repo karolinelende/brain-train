@@ -1,4 +1,6 @@
 defmodule BrainTrain.SpeedSort do
+  def db_name, do: "speed_sort"
+
   def list_length, do: 6
 
   def generate_list_of_numbers() do
