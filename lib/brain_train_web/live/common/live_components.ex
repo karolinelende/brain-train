@@ -14,7 +14,7 @@ defmodule BrainTrainWeb.Live.Common.LiveComponents do
                   <tr>
                     <th
                       scope="col"
-                      class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                      class="py-3.5 pl-4 pr-3 text-center text-sm font-semibold text-gray-900 sm:pl-6"
                     >
                       Rank
                     </th>
@@ -43,10 +43,10 @@ defmodule BrainTrainWeb.Live.Common.LiveComponents do
                 <tbody class="divide-y divide-gray-200 bg-white">
                   <%= for {score, index} <- Enum.with_index(@scores) do %>
                     <tr>
-                      <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                        <%= index + 1 %>
+                      <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-center font-medium text-gray-500 sm:pl-6">
+                        <%= show_rank_maybe_emoji(index) %>
                       </td>
-                      <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                      <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">
                         <%= score.name %>
                       </td>
                       <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -67,6 +67,18 @@ defmodule BrainTrainWeb.Live.Common.LiveComponents do
       </div>
     </div>
     """
+  end
+
+  defp show_rank_maybe_emoji(index) do
+    emoji =
+      case index do
+        0 -> "🥇"
+        1 -> "🥈"
+        2 -> "🥉"
+        _ -> ""
+      end
+
+    "#{emoji} #{index + 1}"
   end
 
   def username_input(assigns) do
