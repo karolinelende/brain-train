@@ -1,6 +1,7 @@
 defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
   use BrainTrainWeb, :component
   alias BrainTrainWeb.Live.Common.LiveComponents
+  alias BrainTrainWeb.Live.Common.UsernameComponent
 
   def start_game(assigns) do
     ~H"""
@@ -15,11 +16,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
         Your score: <%= @score %>
       </div>
     <% else %>
-      <%= if is_nil(@name) do %>
-        <LiveComponents.username_input name={@name} />
-      <% else %>
-        <div>Let's go, <%= @name %>!</div>
-      <% end %>
+      <%= live_component(UsernameComponent, id: 1, name: @name) %>
     <% end %>
 
     <button

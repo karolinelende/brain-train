@@ -2,6 +2,7 @@ defmodule BrainTrainWeb.Live.HomePageLive.Home do
   use Phoenix.LiveView, layout: {BrainTrainWeb.LayoutView, "live.html"}
   alias BrainTrain.Scores
   alias BrainTrainWeb.Live.Common.LiveComponents
+  alias BrainTrainWeb.Live.Common.UsernameComponent
   alias BrainTrainWeb.Router.Helpers, as: Routes
   alias BrainTrainWeb.Presence
 
@@ -54,10 +55,5 @@ defmodule BrainTrainWeb.Live.HomePageLive.Home do
       end)
 
     {:noreply, socket}
-  end
-
-  def handle_event("set_name", %{"name" => name}, socket) do
-    Presence.join_session(name)
-    {:noreply, assign(socket, name: name)}
   end
 end

@@ -86,11 +86,6 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
     {:noreply, socket}
   end
 
-  def handle_event("set_name", %{"name" => name}, socket) do
-    Presence.join_session(name)
-    {:noreply, assign(socket, name: name)}
-  end
-
   def handle_event(
         "rank-number",
         %{"index" => index},

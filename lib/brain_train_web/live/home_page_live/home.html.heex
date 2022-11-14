@@ -5,11 +5,7 @@
   </div>
 
   <div class="w-1/2">
-    <%= if is_nil(@name) do %>
-      <LiveComponents.username_input name={@name} />
-    <% else %>
-      <div>Let's go, <%= @name %>!</div>
-    <% end %>
+    <%= live_component(UsernameComponent, id: 1, name: @name) %>
   </div>
 
   <section class="flex justify-between mt-8">
