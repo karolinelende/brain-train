@@ -63,6 +63,11 @@
                       "hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium",
                     to: Routes.live_path(@conn, BrainTrainWeb.Live.SpeedSortLive.Index)
                   ) %>
+                  <%= active_link(@conn, "TicTacToe",
+                    class:
+                      "hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium",
+                    to: Routes.live_path(@conn, BrainTrainWeb.Live.TicTacToe.Index)
+                  ) %>
                   <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
                     <.link
                       href={Routes.live_dashboard_path(@conn, :home)}

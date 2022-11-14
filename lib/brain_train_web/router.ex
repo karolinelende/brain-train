@@ -27,6 +27,8 @@ defmodule BrainTrainWeb.Router do
     live "/", Live.HomePageLive.Home
 
     live "/speedsort", Live.SpeedSortLive.Index
+
+    live "/tictactoe", Live.TicTacToe.Index
   end
 
   # Other scopes may use custom stacks.
