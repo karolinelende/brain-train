@@ -29,14 +29,25 @@ defmodule BrainTrainWeb.Live.HomePageLive.Home do
 
   defp handle_joins(socket, joins) do
     Enum.reduce(joins, socket, fn {user, %{metas: [meta | _]}}, socket ->
-      assign(socket, :users, Map.put(socket.assigns.users, user, meta))
+      assign(
+        socket,
+        :users,
+        Map.put(socket.assigns.users, user, meta) |> sort_users()
+      )
     end)
   end
 
   defp handle_leaves(socket, leaves) do
     Enum.reduce(leaves, socket, fn {user, _}, socket ->
-      assign(socket, :users, Map.delete(socket.assigns.users, user))
+      assign(socket, :users, Map.delete(socket.assigns.users, user) |> sort_users())
     end)
+  end
+
+  defp sort_users(users) do
+    Enum.sort_by(users, fn {_id, user_map} ->
+      user_map.name
+    end)
+    |> Enum.into(%{})
   end
 
   def handle_info(%Phoenix.Socket.Broadcast{event: "presence_diff", payload: diff}, socket) do
