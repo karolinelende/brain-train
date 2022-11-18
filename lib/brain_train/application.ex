@@ -15,6 +15,15 @@ defmodule BrainTrain.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: BrainTrain.PubSub},
       BrainTrainWeb.Presence,
+      # Start the registry for tracking running games
+      {Horde.Registry, [name: BrainTrain.GameRegistry, keys: :unique, members: :auto]},
+      {Horde.DynamicSupervisor,
+       [
+         name: BrainTrain.DistributedSupervisor,
+         shutdown: 1000,
+         strategy: :one_for_one,
+         members: :auto
+       ]},
       # Start the Endpoint (http/https)
       BrainTrainWeb.Endpoint
       # Start a worker by calling: BrainTrain.Worker.start_link(arg)

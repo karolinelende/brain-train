@@ -50,7 +50,8 @@ defmodule BrainTrain.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:timex, "~> 3.1"},
-      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev}
+      {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
+      {:horde, "~> 0.8.5"}
     ]
   end
 
