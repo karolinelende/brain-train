@@ -1,5 +1,5 @@
 defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
-  use Phoenix.LiveView, layout: {BrainTrainWeb.LayoutView, "live.html"}
+  use Phoenix.LiveView, layout: {BrainTrainWeb.LayoutView, :live}
   alias BrainTrain.SpeedSort
   alias BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents
   alias BrainTrain.Scores

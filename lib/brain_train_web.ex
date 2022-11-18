@@ -45,7 +45,7 @@ defmodule BrainTrainWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {BrainTrainWeb.LayoutView, "live.html"}
+        layout: {BrainTrainWeb.LayoutView, :live}
 
       unquote(view_helpers())
     end

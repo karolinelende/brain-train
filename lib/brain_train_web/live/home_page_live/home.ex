@@ -1,5 +1,5 @@
 defmodule BrainTrainWeb.Live.HomePageLive.Home do
-  use Phoenix.LiveView, layout: {BrainTrainWeb.LayoutView, "live.html"}
+  use Phoenix.LiveView, layout: {BrainTrainWeb.LayoutView, :live}
   alias BrainTrain.Scores
   alias BrainTrainWeb.Live.Common.LiveComponents
   alias BrainTrainWeb.Live.Common.UsernameComponent

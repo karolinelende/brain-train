@@ -1,5 +1,5 @@
 defmodule BrainTrainWeb.Live.TicTacToe.Index do
-  use Phoenix.LiveView, layout: {BrainTrainWeb.LayoutView, "live.html"}
+  use Phoenix.LiveView, layout: {BrainTrainWeb.LayoutView, :live}
   alias BrainTrain.Scores
   alias BrainTrainWeb.Presence
   alias BrainTrainWeb.Live.TicTacToe.TicTacToeComponents
