@@ -75,6 +75,28 @@ defmodule BrainTrain.TicTacToe.GameState do
     {:ok, %GameState{state | players: [p1, player]} |> reset_inactivity_timer()}
   end
 
+  @spec get_player(t(), player_id :: String.t()) :: nil | Player.t()
+  def get_player(%GameState{players: players} = _state, player_id) do
+    Enum.find(players, &(&1.id == player_id))
+  end
+
+  @spec find_player(t(), player_id :: String.t()) :: {:ok, Player.t()} | {:error, String.t()}
+  def find_player(%GameState{} = state, player_id) do
+    case get_player(state, player_id) do
+      nil ->
+        {:error, "Player not found"}
+
+      %Player{} = player ->
+        {:ok, player}
+    end
+  end
+
+  @spec opponent(t(), Player.t()) :: nil | Player.t()
+  def opponent(%GameState{} = state, %Player{} = player) do
+    # Find the first player that doesn't have this ID
+    Enum.find(state.players, &(&1.id != player.id))
+  end
+
   @spec start(t()) :: {:ok, t()} | {:error, String.t()}
   def start(%GameState{status: :playing}), do: {:error, "Game in play"}
   def start(%GameState{status: :done}), do: {:error, "Game is done"}
@@ -84,6 +106,249 @@ defmodule BrainTrain.TicTacToe.GameState do
   end
 
   def start(%GameState{players: _players}), do: {:error, "Missing players"}
+
+  @spec player_turn?(t(), Player.t()) :: boolean()
+  def player_turn?(%GameState{player_turn: turn}, %Player{letter: letter}) when turn == letter,
+    do: true
+
+  def player_turn?(%GameState{}, %Player{}), do: false
+
+  @spec check_for_player_win(t(), Player.t()) :: :not_found | [atom()]
+  def check_for_player_win(%GameState{board: board}, %Player{letter: letter}) do
+    case board do
+      #
+      # Check for all the straight across wins
+      [%Square{letter: ^letter}, %Square{letter: ^letter}, %Square{letter: ^letter} | _] ->
+        [:sq11, :sq12, :sq13]
+
+      [_, _, _, %Square{letter: ^letter}, %Square{letter: ^letter}, %Square{letter: ^letter} | _] ->
+        [:sq21, :sq22, :sq23]
+
+      [
+        _,
+        _,
+        _,
+        _,
+        _,
+        _,
+        %Square{letter: ^letter},
+        %Square{letter: ^letter},
+        %Square{letter: ^letter}
+      ] ->
+        [:sq31, :sq32, :sq33]
+
+      #
+      # Check for all the vertical wins
+      [
+        %Square{letter: ^letter},
+        _,
+        _,
+        %Square{letter: ^letter},
+        _,
+        _,
+        %Square{letter: ^letter},
+        _,
+        _ | _
+      ] ->
+        [:sq11, :sq21, :sq31]
+
+      [
+        _,
+        %Square{letter: ^letter},
+        _,
+        _,
+        %Square{letter: ^letter},
+        _,
+        _,
+        %Square{letter: ^letter},
+        _ | _
+      ] ->
+        [:sq12, :sq22, :sq32]
+
+      [
+        _,
+        _,
+        %Square{letter: ^letter},
+        _,
+        _,
+        %Square{letter: ^letter},
+        _,
+        _,
+        %Square{letter: ^letter} | _
+      ] ->
+        [:sq13, :sq23, :sq33]
+
+      #
+      # Check for the diagonal wins
+      [
+        %Square{letter: ^letter},
+        _,
+        _,
+        _,
+        %Square{letter: ^letter},
+        _,
+        _,
+        _,
+        %Square{letter: ^letter} | _
+      ] ->
+        [:sq11, :sq22, :sq33]
+
+      [
+        _,
+        _,
+        %Square{letter: ^letter},
+        _,
+        %Square{letter: ^letter},
+        _,
+        %Square{letter: ^letter},
+        _,
+        _ | _
+      ] ->
+        [:sq13, :sq22, :sq31]
+
+      _ ->
+        :not_found
+    end
+  end
+
+  @spec valid_moves(t()) :: [atom()]
+  def valid_moves(%GameState{board: board}) do
+    Enum.reduce(board, [], fn square, acc ->
+      if Square.is_open?(square) do
+        [square.name | acc]
+      else
+        acc
+      end
+    end)
+  end
+
+  @spec result(t()) :: :playing | :draw | Player.t()
+  def result(%GameState{players: [p1, p2]} = state) do
+    player_1_won =
+      case check_for_player_win(state, p1) do
+        :not_found -> false
+        [_, _, _] -> true
+      end
+
+    player_2_won =
+      case check_for_player_win(state, p2) do
+        :not_found -> false
+        [_, _, _] -> true
+      end
+
+    cond do
+      player_1_won -> p1
+      player_2_won -> p2
+      valid_moves(state) == [] -> :draw
+      true -> :playing
+    end
+  end
+
+  def find_square(%GameState{} = state, square) do
+    case Enum.find(state.board, &(&1.name == square)) do
+      nil ->
+        {:error, "Square not found"}
+
+      %Square{} = square ->
+        {:ok, square}
+    end
+  end
+
+  @spec move(t() | {:ok, t()}, Player.t(), square :: atom()) :: {:ok, t()} | {:error, String.t()}
+  def move({:ok, %GameState{} = state}, %Player{} = player, square) do
+    move(state, player, square)
+  end
+
+  def move(%GameState{status: :playing} = state, %Player{} = player, square) do
+    state
+    |> verify_player_turn(player)
+    |> verify_square(square)
+    |> player_claim_square(player, square)
+    |> check_for_done()
+    |> next_player_turn()
+    |> reset_inactivity_timer()
+  end
+
+  def move(%GameState{status: :not_started} = _state, %Player{} = _player, _square) do
+    {:error, "Game hasn't started yet!"}
+  end
+
+  def move(%GameState{status: :done} = _state, %Player{} = _player, _square) do
+    {:error, "Game is over!"}
+  end
+
+  def restart(%GameState{players: [p1 | _]} = state) do
+    blank_state = %GameState{}
+
+    %GameState{state | board: blank_state.board, status: :playing, player_turn: p1.letter}
+    |> reset_inactivity_timer()
+  end
+
+  defp verify_player_turn(%GameState{} = state, %Player{} = player) do
+    if player_turn?(state, player) do
+      {:ok, state}
+    else
+      {:error, "Not your turn!"}
+    end
+  end
+
+  defp verify_square({:ok, %GameState{} = state}, square) do
+    case GameState.find_square(state, square) do
+      {:ok, %Square{letter: nil}} -> {:ok, state}
+      {:ok, %Square{}} -> {:error, "Square already taken"}
+      {:error, _reason} = error -> error
+    end
+  end
+
+  defp verify_square({:error, _reason} = error, _square), do: error
+
+  defp player_claim_square({:ok, %GameState{} = state}, %Player{} = player, square) do
+    {:ok, place_letter(state, player.letter, square)}
+  end
+
+  defp player_claim_square({:error, _reason} = error, _player, _square), do: error
+
+  @spec place_letter(t, Square.t(), letter :: nil | String.t()) :: t
+  def place_letter(%GameState{} = state, letter, square) do
+    updated_board =
+      Enum.map(state.board, fn sq ->
+        if sq.name == square do
+          %Square{sq | letter: letter}
+        else
+          sq
+        end
+      end)
+
+    %GameState{state | board: updated_board}
+  end
+
+  defp check_for_done({:ok, %GameState{} = state}) do
+    case result(state) do
+      :playing ->
+        {:ok, state}
+
+      _game_done ->
+        {:ok, %GameState{state | status: :done}}
+    end
+  end
+
+  defp check_for_done({:error, _reason} = error), do: error
+
+  defp next_player_turn({:error, _reason} = error), do: error
+
+  defp next_player_turn({:ok, %GameState{player_turn: turn} = state}) do
+    {:ok, %GameState{state | player_turn: if(turn == "X", do: "O", else: "X")}}
+  end
+
+  defp next_player_turn({:ok, %GameState{player_turn: turn} = state}) do
+    {:ok, %GameState{state | player_turn: if(turn == "X", do: "O", else: "X")}}
+  end
+
+  defp reset_inactivity_timer({:error, _reason} = error), do: error
+
+  defp reset_inactivity_timer({:ok, %GameState{} = state}) do
+    {:ok, reset_inactivity_timer(state)}
+  end
 
   defp reset_inactivity_timer(%GameState{} = state) do
     state

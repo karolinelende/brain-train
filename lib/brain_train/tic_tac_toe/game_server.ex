@@ -56,11 +56,6 @@ defmodule BrainTrain.TicTacToe.GameServer do
   end
 
   def start_or_join(game_code, player) do
-    Horde.DynamicSupervisor.start_child(
-      BrainTrain.DistributedSupervisor,
-      {GameServer, [name: game_code, player: player]}
-    )
-
     case Horde.DynamicSupervisor.start_child(
            BrainTrain.DistributedSupervisor,
            {GameServer, [name: game_code, player: player]}
@@ -83,6 +78,18 @@ defmodule BrainTrain.TicTacToe.GameServer do
     GenServer.call(via_tuple(game_code), {:join_game, player})
   end
 
+  def move(game_code, player_id, square) do
+    GenServer.call(via_tuple(game_code), {:move, player_id, square})
+  end
+
+  def get_current_game_state(game_code) do
+    GenServer.call(via_tuple(game_code), :current_state)
+  end
+
+  def restart(game_code) do
+    GenServer.call(via_tuple(game_code), :restart)
+  end
+
   @impl true
   def init(%{player: player, code: code}) do
     {:ok, GameState.new(code, player)}
@@ -99,6 +106,37 @@ defmodule BrainTrain.TicTacToe.GameServer do
         Logger.error("Failed to join and start game. Error: #{inspect(reason)}")
         {:reply, error, state}
     end
+  end
+
+  @impl true
+  def handle_call(:current_state, _from, %GameState{} = state) do
+    {:reply, state, state}
+  end
+
+  @impl true
+  def handle_call({:move, player_id, square}, _from, %GameState{} = state) do
+    with {:ok, player} <- GameState.find_player(state, player_id),
+         {:ok, new_state} <- GameState.move(state, player, square) do
+      broadcast_game_state(new_state)
+      {:reply, :ok, new_state}
+    else
+      {:error, reason} = error ->
+        Logger.error("Player move failed. Error: #{inspect(reason)}")
+        {:reply, error, state}
+    end
+  end
+
+  @impl true
+  def handle_call(:restart, _from, %GameState{} = state) do
+    new_state = GameState.restart(state)
+    broadcast_game_state(new_state)
+    {:reply, :ok, new_state}
+  end
+
+  @impl true
+  def handle_info(:end_for_inactivity, %GameState{} = state) do
+    Logger.info("Game #{inspect(state.code)} was ended for inactivity")
+    {:stop, :normal, state}
   end
 
   def broadcast_game_state(%GameState{} = state) do
