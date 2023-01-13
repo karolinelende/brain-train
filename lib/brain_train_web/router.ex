@@ -28,6 +28,8 @@ defmodule BrainTrainWeb.Router do
 
     live "/speedsort", Live.SpeedSortLive.Index
 
+    live "/speedsortmulti", Live.SpeedSortMulti.Index
+
     live "/tictactoe", Live.TicTacToe.Index
   end
 
