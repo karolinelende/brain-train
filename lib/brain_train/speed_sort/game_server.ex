@@ -75,6 +75,10 @@ defmodule BrainTrain.SpeedSort.GameServer do
     GenServer.call(via_tuple(game_code), {:join_game, player})
   end
 
+  def start_game(game_code) do
+    GenServer.call(via_tuple(game_code), {:start_game})
+  end
+
   def round_complete(game_code, player_id, square) do
     GenServer.call(via_tuple(game_code), {:round_complete, player_id, square})
   end
@@ -105,7 +109,7 @@ defmodule BrainTrain.SpeedSort.GameServer do
   end
 
   @impl true
-  def handle_call({:start_game, _player}, _from, %GameState{} = state) do
+  def handle_call({:start_game}, _from, %GameState{} = state) do
     with {:ok, started} <- GameState.start(state) do
       broadcast_game_state(started)
       {:reply, :ok, started}

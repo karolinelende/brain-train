@@ -43,8 +43,6 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
           game: GameServer.get_current_game_state(game_code)
         )
 
-      IO.inspect(socket.assigns.game)
-
       {:noreply, socket}
     else
       {:error, reason} when is_binary(reason) ->
@@ -56,7 +54,15 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
   end
 
   def handle_event("start_game", _params, socket) do
-    {:noreply, socket}
+    with :ok <- GameServer.start_game(socket.assigns.game_code) do
+      {:noreply, socket}
+    else
+      {:error, reason} when is_binary(reason) ->
+        {:noreply, put_flash(socket, :error, reason)}
+
+      {:error, _reason} ->
+        {:noreply, put_flash(socket, :error, "An error occurred")}
+    end
   end
 
   def handle_info(:load_game_state, %{assigns: %{server_found: true}} = socket) do

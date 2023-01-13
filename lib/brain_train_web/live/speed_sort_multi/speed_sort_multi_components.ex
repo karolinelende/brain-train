@@ -61,7 +61,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
         </div>
       </div>
       <button
-        phx-click="join_game"
+        phx-click="start_game"
         class="p-2 mt-1 bg-gray-800 w-1/2 rounded-lg text-white hover:bg-pink-800 sm:text-sm"
       >
         Start game
