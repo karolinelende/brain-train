@@ -12,6 +12,10 @@ defmodule BrainTrain.SpeedSort do
     |> Enum.shuffle()
   end
 
+  def generate_for_multi() do
+    Enum.map(1..100, fn _ -> generate_list_of_numbers() end)
+  end
+
   def calculate_score(existing_score, elapsed_time, :correct),
     do: round(existing_score + 10 + 20 / elapsed_time)
 

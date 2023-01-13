@@ -2,7 +2,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
   use BrainTrainWeb, :component
   alias BrainTrainWeb.Live.Common.UsernameComponent
 
-  def start_game(assigns) do
+  def home(assigns) do
     ~H"""
     <%= if @message do %>
       <div class="font-medium bg-gray-200 text-2xl rounded-lg py-4 px-4 m-4 text-pink-800 animate-pulse">
@@ -39,9 +39,38 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
 
   def playing_game(assigns) do
     ~H"""
-    <div class="font-medium bg-emerald-700 text-2xl rounded-lg py-4 px-4 m-8 text-white">
-      Playing game
-    </div>
+    <%= if @game.status in [:not_started, :waiting] do %>
+      <p class="mt-8 text-center font-medium">
+        Tell friends to use this game code to join you!
+      </p>
+      <div class="mt-2 text-8xl text-pink-800 text-center font-semibold">
+        <%= @game_code %>
+      </div>
+
+      <div>
+        Waiting for others to join...
+        <div>
+          <h2 class="font-medium text-2xl text-pink-800 py-4">Players</h2>
+          <ul>
+            <%= for {_id, %{name: name}} <- @game.players do %>
+              <li class="py-2">
+                <%= name %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <button
+        phx-click="join_game"
+        class="p-2 mt-1 bg-gray-800 w-1/2 rounded-lg text-white hover:bg-pink-800 sm:text-sm"
+      >
+        Start game
+      </button>
+    <% else %>
+      <p class="mt-8 text-center font-medium">
+        Playing
+      </p>
+    <% end %>
     """
   end
 end
