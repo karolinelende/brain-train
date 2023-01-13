@@ -11,4 +11,10 @@ defmodule BrainTrain.SpeedSort do
     |> Enum.with_index()
     |> Enum.shuffle()
   end
+
+  def calculate_score(existing_score, elapsed_time, :correct),
+    do: round(existing_score + 10 + 20 / elapsed_time)
+
+  def calculate_score(existing_score, _elapsed_time, :incorrect),
+    do: round(existing_score - 5)
 end

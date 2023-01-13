@@ -118,7 +118,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
 
     socket
     |> put_flash(:info, "Good job!")
-    |> assign(score: round(score + 10 + 20 / elapsed_time))
+    |> assign(score: SpeedSort.calculate_score(score, elapsed_time, :correct))
     |> assign(numbers: SpeedSort.generate_list_of_numbers())
     |> assign(round_start_time: DateTime.utc_now())
     |> assign(clicks: 0)
@@ -129,7 +129,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
 
     socket
     |> put_flash(:error, "Wrong number!")
-    |> assign(score: score - 5)
+    |> assign(score: SpeedSort.calculate_score(score, nil, :incorrect))
     |> assign(numbers: SpeedSort.generate_list_of_numbers())
     |> assign(clicks: 0)
   end
