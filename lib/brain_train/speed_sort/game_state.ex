@@ -16,7 +16,12 @@ defmodule BrainTrain.SpeedSort.GameState do
             numbers: []
 
   def new(game_code, %Player{} = player) do
-    %GameState{code: game_code, players: %{player.id => player}, status: :waiting}
+    %GameState{
+      code: game_code,
+      players: %{player.id => player},
+      status: :waiting,
+      numbers: SpeedSort.generate_for_multi()
+    }
   end
 
   def join_game(%GameState{players: players} = _state, %Player{}) when players == %{} do
@@ -46,7 +51,7 @@ defmodule BrainTrain.SpeedSort.GameState do
   def start(%GameState{status: :not_started}), do: {:error, "No players have joined"}
 
   def start(%GameState{status: :waiting, players: _players} = state) do
-    {:ok, %GameState{state | status: :playing, numbers: SpeedSort.generate_for_multi()}}
+    {:ok, %GameState{state | status: :playing}}
   end
 
   def start(%GameState{players: _player}), do: {:error, "Only one player"}

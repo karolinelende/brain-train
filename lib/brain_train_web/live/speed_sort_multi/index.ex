@@ -33,14 +33,18 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
       Phoenix.PubSub.subscribe(BrainTrain.PubSub, "game:#{game_code}")
       send(self(), :load_game_state)
 
+      game = GameServer.get_current_game_state(game_code)
+
       socket =
         socket
         |> assign(
           play: true,
           game_code: game_code,
           player_id: player.id,
-          player: nil,
-          game: GameServer.get_current_game_state(game_code)
+          player: player,
+          game: game,
+          numbers: hd(game.numbers),
+          clicks: 0
         )
 
       {:noreply, socket}

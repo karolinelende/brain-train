@@ -67,10 +67,32 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
         Start game
       </button>
     <% else %>
-      <p class="mt-8 text-center font-medium">
-        Playing
-      </p>
+      <.board {assigns_to_attributes(assigns)} />
     <% end %>
+    """
+  end
+
+  def board(assigns) do
+    ~H"""
+    <div>
+      <div class="grid grid-cols-3 gap-12 p-8 rounded-lg bg-pink-50">
+        <%= for {number, index} <- @numbers do %>
+          <%= if @clicks > index do %>
+            <div class="w-16 h-16"></div>
+          <% else %>
+            <div>
+              <button
+                class="font-medium bg-pink-800 w-16 h-16 text-2xl rounded-lg text-white"
+                phx-click="rank-number"
+                phx-value-index={index}
+              >
+                <%= number %>
+              </button>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
     """
   end
 end
