@@ -5,7 +5,7 @@
   <div class="pb-4">The quicker you are, the higher the score you get!</div>
 
   <%= if @play do %>
-    <SpeedSortMultiComponents.playing_game {assigns_to_attributes(assigns)} />
+    <SpeedSortMultiComponents.game_area {assigns_to_attributes(assigns)} />
   <% else %>
     <SpeedSortMultiComponents.home {assigns_to_attributes(assigns)} />
   <% end %>

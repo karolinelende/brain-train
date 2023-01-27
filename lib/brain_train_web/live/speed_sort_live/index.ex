@@ -1,8 +1,7 @@
 defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   use Phoenix.LiveView, layout: {BrainTrainWeb.LayoutView, :live}
-  alias BrainTrain.SpeedSort
+  alias BrainTrain.{Scores, SpeedSort}
   alias BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents
-  alias BrainTrain.Scores
   alias BrainTrainWeb.Presence
 
   @game_duration 10

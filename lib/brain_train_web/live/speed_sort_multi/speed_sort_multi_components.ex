@@ -37,7 +37,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
     """
   end
 
-  def playing_game(assigns) do
+  def game_area(assigns) do
     ~H"""
     <%= if @game.status in [:not_started, :waiting] do %>
       <p class="mt-8 text-center font-medium">
