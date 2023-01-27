@@ -19,6 +19,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
       |> assign(message: nil)
       |> assign(game_code: nil)
       |> assign(name: Map.get(session, "username"))
+      |> assign(changeset: SpeedSortGameStarter.insert_changeset(%{}))
 
     {:ok, socket}
   end
@@ -37,6 +38,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
 
       socket =
         socket
+        |> clear_flash()
         |> assign(
           play: true,
           game_code: game_code,
@@ -52,7 +54,8 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
       {:error, reason} when is_binary(reason) ->
         {:noreply, put_flash(socket, :error, reason)}
 
-      {:error, _reason} ->
+      {:error, changeset} ->
+        socket = assign(socket, changeset: changeset)
         {:noreply, put_flash(socket, :error, "An error occurred")}
     end
   end

@@ -12,11 +12,11 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
 
     <%= live_component(UsernameComponent, id: 1, name: @name) %>
 
-    <form phx-submit="join_game">
+    <.form :let={f} for={@changeset} phx-submit="join_game">
       <label for="game_code" class="block text-sm font-medium text-gray-700 text-left mt-8">
         Game code (leave empty to start new game)
       </label>
-      <div class="flex justify-between items-center">
+      <div class="flex justify-between items-baseline">
         <div class="relative mt-1 w-full rounded-md mr-2">
           <input
             type="text"
@@ -25,6 +25,9 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
             class="rounded-md w-full border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 sm:text-sm"
             value={@game_code}
           />
+          <div>
+            <%= error_tag(f, :game_code) %>
+          </div>
         </div>
         <button
           type="submit"
@@ -33,7 +36,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
           Join game
         </button>
       </div>
-    </form>
+    </.form>
     """
   end
 
