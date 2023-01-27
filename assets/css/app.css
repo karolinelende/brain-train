@@ -11,25 +11,19 @@
   border-radius: 4px;
 }
 .alert-info {
-  animation: fade-scale-in-out 1s;
   color: #31708f;
   background-color: #d9edf7;
   border-color: #bce8f1;
-  opacity: 0;
 }
 .alert-warning {
-  animation: fade-scale-in-out 1s;
   color: #8a6d3b;
   background-color: #fcf8e3;
   border-color: #faebcc;
-  opacity: 0;
 }
 .alert-danger {
-  animation: fade-scale-in-out 1s;
   color: #a94442;
   background-color: #f2dede;
   border-color: #ebccd1;
-  opacity: 0;
 }
 .alert p {
   margin-bottom: 0;
@@ -95,72 +89,3 @@
   text-decoration: none;
   cursor: pointer;
 }
-
-.fade-in-scale {
-  animation: 0.2s ease-in 0s normal forwards 1 fade-in-scale-keys;
-}
-
-.fade-out-scale {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-out-scale-keys;
-}
-
-.fade-in {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-in-keys;
-}
-.fade-out {
-  animation: 0.2s ease-out 0s normal forwards 1 fade-out-keys;
-}
-
-@keyframes fade-scale-in-out {
-  0%,
-  100% {
-    scale: 0.95;
-    opacity: 0;
-  }
-  30%,
-  50% {
-    scale: 1;
-    opacity: 1;
-  }
-}
-
-@keyframes fade-in-scale-keys {
-  0% {
-    scale: 0.95;
-    opacity: 0;
-  }
-  100% {
-    scale: 1;
-    opacity: 1;
-  }
-}
-
-@keyframes fade-out-scale-keys {
-  0% {
-    scale: 1;
-    opacity: 1;
-  }
-  100% {
-    scale: 0.95;
-    opacity: 0;
-  }
-}
-
-@keyframes fade-in-keys {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes fade-out-keys {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
