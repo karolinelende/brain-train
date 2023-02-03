@@ -13,7 +13,8 @@ defmodule BrainTrain.SpeedSort do
   end
 
   def generate_for_multi() do
-    Enum.map(1..100, fn _ -> generate_list_of_numbers() end)
+    Enum.map(0..100, fn index -> {index, generate_list_of_numbers()} end)
+    |> Enum.into(%{})
   end
 
   def calculate_score(existing_score, elapsed_time, :correct),

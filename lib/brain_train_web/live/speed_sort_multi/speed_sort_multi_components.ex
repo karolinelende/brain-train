@@ -87,7 +87,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
       </div>
 
       <div class="grid grid-cols-3 gap-12 p-8 rounded-lg bg-pink-50">
-        <%= for {number, index} <- @numbers do %>
+        <%= for {number, index} <- @player.numbers do %>
           <%= if @player.clicks > index do %>
             <div class="w-16 h-16"></div>
           <% else %>

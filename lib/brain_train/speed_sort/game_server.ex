@@ -79,6 +79,10 @@ defmodule BrainTrain.SpeedSort.GameServer do
     GenServer.call(via_tuple(game_code), {:start_game})
   end
 
+  def click(game_code, player_id, index) do
+    GenServer.call(via_tuple(game_code), {:click, player_id, index})
+  end
+
   def round_complete(game_code, player_id, square) do
     GenServer.call(via_tuple(game_code), {:round_complete, player_id, square})
   end
@@ -116,6 +120,19 @@ defmodule BrainTrain.SpeedSort.GameServer do
     else
       {:error, reason} = error ->
         Logger.error("Failed to start game. Error: #{inspect(reason)}")
+        {:reply, error, state}
+    end
+  end
+
+  @impl true
+  def handle_call({:click, player_id, index}, _from, %GameState{} = state) do
+    with {:ok, player} <- GameState.find_player(state, player_id),
+         {:ok, new_state} <- GameState.click(state, player, index) do
+      broadcast_game_state(new_state)
+      {:reply, :ok, new_state}
+    else
+      {:error, reason} = error ->
+        Logger.error("Player click failed. Error: #{inspect(reason)}")
         {:reply, error, state}
     end
   end

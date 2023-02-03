@@ -42,8 +42,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
           game_code: game_code,
           player_id: player.id,
           player: player,
-          game: game,
-          numbers: hd(game.numbers)
+          game: game
         )
 
       {:noreply, socket}
@@ -69,6 +68,17 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
     end
   end
 
+  def handle_event(
+        "rank-number",
+        %{"index" => index},
+        %{assigns: %{player: player, game_code: game_code}} = socket
+      ) do
+    # TODO can return a message here to add to the flash
+    GameServer.click(game_code, player.id, String.to_integer(index))
+
+    {:noreply, socket}
+  end
+
   def handle_info(:load_game_state, %{assigns: %{server_found: true}} = socket) do
     case GameServer.get_current_game_state(socket.assigns.game_code) do
       %GameState{} = game ->
@@ -86,11 +96,19 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
   end
 
   def handle_info({:game_state, %GameState{} = state} = _event, socket) do
+    player_id = socket.assigns.player_id
+    {:ok, player} = GameState.find_player(state, player_id)
+
     updated_socket =
       socket
       |> clear_flash()
       |> assign(:game, state)
+      |> assign(:player, player)
 
     {:noreply, updated_socket}
+  end
+
+  def handle_info(:clear_flash, socket) do
+    {:noreply, clear_flash(socket)}
   end
 end
