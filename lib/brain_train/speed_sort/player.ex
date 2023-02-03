@@ -8,12 +8,14 @@ defmodule BrainTrain.SpeedSort.Player do
   embedded_schema do
     field :name, :string
     field :score, :integer
+    field :clicks, :integer
     field :round, :integer
   end
 
   @type t :: %Player{
           name: nil | String.t(),
           score: nil | :integer,
+          clicks: :integer,
           round: nil | :integer
         }
 
@@ -23,7 +25,7 @@ defmodule BrainTrain.SpeedSort.Player do
 
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:name, :score, :round])
+    |> cast(attrs, [:name, :score, :round, :clicks])
     |> validate_required([:name])
     |> generate_id()
   end

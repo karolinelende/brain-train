@@ -5,7 +5,6 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
   alias BrainTrainWeb.Presence
   alias BrainTrainWeb.Live.SpeedSortMulti.{SpeedSortGameStarter, SpeedSortMultiComponents}
 
-  @game_duration 10
   @game_title SpeedSort.db_name()
 
   def mount(_params, session, socket) do
@@ -15,7 +14,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
 
     socket =
       socket
-      |> assign(play: false)
+      |> assign(game: %GameState{})
       |> assign(message: nil)
       |> assign(game_code: nil)
       |> assign(name: Map.get(session, "username"))
@@ -40,13 +39,11 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
         socket
         |> clear_flash()
         |> assign(
-          play: true,
           game_code: game_code,
           player_id: player.id,
           player: player,
           game: game,
-          numbers: hd(game.numbers),
-          clicks: 0
+          numbers: hd(game.numbers)
         )
 
       {:noreply, socket}

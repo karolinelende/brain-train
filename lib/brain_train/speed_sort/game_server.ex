@@ -125,25 +125,12 @@ defmodule BrainTrain.SpeedSort.GameServer do
     {:reply, state, state}
   end
 
-  # @impl true
-  # def handle_call({:move, player_id, square}, _from, %GameState{} = state) do
-  #   with {:ok, player} <- GameState.find_player(state, player_id),
-  #        {:ok, new_state} <- GameState.move(state, player, square) do
-  #     broadcast_game_state(new_state)
-  #     {:reply, :ok, new_state}
-  #   else
-  #     {:error, reason} = error ->
-  #       Logger.error("Player move failed. Error: #{inspect(reason)}")
-  #       {:reply, error, state}
-  #   end
-  # end
-
-  # @impl true
-  # def handle_call(:restart, _from, %GameState{} = state) do
-  #   new_state = GameState.restart(state)
-  #   broadcast_game_state(new_state)
-  #   {:reply, :ok, new_state}
-  # end
+  @impl true
+  def handle_info(:update_timer, %GameState{} = state) do
+    new_state = GameState.update_timer(state)
+    broadcast_game_state(new_state)
+    {:noreply, new_state}
+  end
 
   def broadcast_game_state(%GameState{} = state) do
     PubSub.broadcast(BrainTrain.PubSub, "game:#{state.code}", {:game_state, state})

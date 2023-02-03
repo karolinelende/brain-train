@@ -4,9 +4,14 @@
   <div>Rank the numbers from smallest to largest.</div>
   <div class="pb-4">The quicker you are, the higher the score you get!</div>
 
-  <%= if @play do %>
-    <SpeedSortMultiComponents.game_area {assigns_to_attributes(assigns)} />
-  <% else %>
-    <SpeedSortMultiComponents.home {assigns_to_attributes(assigns)} />
+  <%= case @game.status do %>
+    <% :not_started -> %>
+      <SpeedSortMultiComponents.home {assigns_to_attributes(assigns)} />
+    <% :waiting -> %>
+      <SpeedSortMultiComponents.waiting_room {assigns_to_attributes(assigns)} />
+    <% :playing -> %>
+      <SpeedSortMultiComponents.board {assigns_to_attributes(assigns)} />
+    <% :done -> %>
+      <SpeedSortMultiComponents.game_over {assigns_to_attributes(assigns)} />
   <% end %>
 </div>
