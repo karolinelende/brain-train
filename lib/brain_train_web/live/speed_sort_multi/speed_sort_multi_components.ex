@@ -104,6 +104,9 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
         <% end %>
       </div>
     </div>
+    <div class="font-medium bg-emerald-700 text-2xl rounded-lg py-4 px-4 m-8 text-white">
+      Your score: <%= @player.score %>
+    </div>
     """
   end
 
