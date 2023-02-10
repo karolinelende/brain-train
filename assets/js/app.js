@@ -89,9 +89,22 @@ window.addEventListener("phx:page-loading-stop", (info) => topbar.hide());
 
 window.addEventListener(`phx:bounce`, (e) => {
   let el = document.getElementById(e.detail.id);
-  console.log(e);
   if (el) {
     liveSocket.execJS(el, el.getAttribute("data-bounce"));
+  }
+});
+
+window.addEventListener(`phx:shake`, (e) => {
+  let el = document.getElementById(e.detail.id);
+  if (el) {
+    liveSocket.execJS(el, el.getAttribute("data-shake"));
+  }
+});
+
+window.addEventListener(`phx:win`, (e) => {
+  let el = document.getElementById(e.detail.id);
+  if (el) {
+    liveSocket.execJS(el, el.getAttribute("data-win"));
   }
 });
 

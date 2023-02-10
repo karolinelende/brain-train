@@ -6,12 +6,6 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
 
   def home(assigns) do
     ~H"""
-    <%= if @message do %>
-      <div class="font-medium bg-gray-200 text-2xl rounded-lg py-4 px-4 m-4 text-pink-800 animate-pulse">
-        <%= @message %>
-      </div>
-    <% end %>
-
     <%= live_component(UsernameComponent, id: 1, name: @name) %>
 
     <.form :let={f} for={@changeset} phx-submit="join_game">
@@ -91,7 +85,12 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
         <div class="px-1">seconds</div>
       </div>
 
-      <div class="grid grid-cols-3 gap-12 p-8 rounded-lg bg-pink-50">
+      <div
+        class="grid grid-cols-3 gap-12 p-8 rounded-lg bg-pink-50"
+        id="grid"
+        data-shake={animate_shake("#grid")}
+        data-win={animate_win("#grid")}
+      >
         <%= for {number, index} <- @player.numbers do %>
           <%= if @player.clicks > index do %>
             <div class="w-16 h-16"></div>
@@ -113,6 +112,14 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
       Your score: <%= @player.score %>
     </div>
     """
+  end
+
+  defp animate_shake(element_id) do
+    JS.transition(%JS{}, "animate-shake bg-pink-100", to: element_id, time: 300)
+  end
+
+  defp animate_win(element_id) do
+    JS.transition(%JS{}, "animate-pingy bg-emerald-100", to: element_id, time: 300)
   end
 
   def game_over(assigns) do

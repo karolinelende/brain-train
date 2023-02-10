@@ -133,7 +133,8 @@ defmodule BrainTrain.SpeedSort.GameState do
       | round: current_round + 1,
         score: new_score,
         numbers: new_numbers,
-        clicks: 0
+        clicks: 0,
+        previous_round_result: result
     }
 
     updated_players = Map.put(state.players, player.id, updated_player)

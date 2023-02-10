@@ -12,6 +12,7 @@ defmodule BrainTrain.SpeedSort.Player do
     field :round, :integer
     field :round_start_time, :utc_datetime_usec
     field :numbers, {:array, :integer}
+    field :previous_round_result, :string
   end
 
   @type t :: %Player{
@@ -20,8 +21,11 @@ defmodule BrainTrain.SpeedSort.Player do
           clicks: :integer,
           round: :integer,
           round_start_time: nil | :utc_datetime_usec,
-          numbers: nil | list(:integer)
+          numbers: nil | list(:integer),
+          previous_round_result: nil | String.t()
         }
+
+  @fields [:name, :score, :round, :clicks, :previous_round_result]
 
   def insert_changeset(attrs) do
     changeset(%Player{}, attrs)
@@ -29,7 +33,7 @@ defmodule BrainTrain.SpeedSort.Player do
 
   def changeset(player, attrs) do
     player
-    |> cast(attrs, [:name, :score, :round, :clicks])
+    |> cast(attrs, @fields)
     |> validate_required([:name])
     |> generate_id()
   end
@@ -46,7 +50,7 @@ defmodule BrainTrain.SpeedSort.Player do
 
   def create(params) do
     params
-    |> Map.merge(%{score: 0, round: 0, clicks: 0})
+    |> Map.merge(%{score: 0, round: 0, clicks: 0, previous_round_result: nil})
     |> insert_changeset()
     |> apply_action(:insert)
   end

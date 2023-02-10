@@ -18,7 +18,6 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
     socket =
       socket
       |> assign(game: %GameState{})
-      |> assign(message: nil)
       |> assign(game_code: nil)
       |> assign(name: Map.get(session, "username"))
       |> assign(changeset: SpeedSortGameStarter.insert_changeset(%{}))
@@ -77,7 +76,6 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
         %{"index" => index},
         %{assigns: %{player: player, game_code: game_code}} = socket
       ) do
-    # TODO can return a message here to add to the flash
     GameServer.click(game_code, player.id, String.to_integer(index))
 
     {:noreply, socket}
@@ -103,15 +101,14 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
     player_id = socket.assigns.player_id
     {:ok, player} = GameState.find_player(state, player_id)
 
-    new_player = get_new_player(socket.assigns.game, state)
-
     socket =
       socket
       |> clear_flash()
+      |> maybe_celebrate_round_complete(player)
+      |> maybe_animate_player_joined(state)
       |> assign(:game, state)
       |> assign(:player, player)
-      |> push_event("bounce", %{id: "player-#{new_player}"})
-      |> maybe_save_and_assign_scores(state, player)
+      |> maybe_save_and_assign_scores()
 
     {:noreply, socket}
   end
@@ -126,22 +123,48 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
     {:noreply, socket}
   end
 
-  defp get_new_player(%{players: old_players}, %{players: new_players}) do
-    if length(Enum.into(old_players, [])) == length(Enum.into(new_players, [])) do
-      nil
-    else
-      %{added: added} = MapDiff.diff(old_players, new_players)
-      [player] = Map.values(added)
-      player.name
+  defp maybe_animate_player_joined(%{assigns: %{game: %{players: old_players}}} = socket, %{
+         players: new_players
+       }) do
+    cond do
+      length(Enum.into(old_players, [])) == length(Enum.into(new_players, [])) ->
+        socket
+
+      %{added: added} = MapDiff.diff(old_players, new_players) ->
+        [player] = Map.values(added)
+
+        push_event(socket, "bounce", %{id: "player-#{player.name}"})
+
+      true ->
+        socket
     end
   end
 
-  defp get_new_player(_old_state, _new_stage), do: nil
+  defp maybe_animate_player_joined(socket, _new_state), do: socket
+
+  defp maybe_celebrate_round_complete(%{assigns: %{player: old_player}} = socket, player) do
+    cond do
+      Map.equal?(old_player, player) ->
+        socket
+
+      old_player.round == player.round ->
+        socket
+
+      player.previous_round_result == :correct ->
+        push_event(socket, "win", %{id: "grid"})
+
+      player.previous_round_result == :incorrect ->
+        push_event(socket, "shake", %{id: "grid"})
+
+      true ->
+        socket
+    end
+  end
+
+  defp maybe_celebrate_round_complete(socket, _new_state), do: socket
 
   defp maybe_save_and_assign_scores(
-         socket,
-         %GameState{status: :done, players: players},
-         player
+         %{assigns: %{player: player, game: %GameState{status: :done, players: players}}} = socket
        ) do
     %{name: player.name, score: player.score, game: @game_title}
     |> Scores.insert()
@@ -161,7 +184,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
     |> add_confetti(is_winner?)
   end
 
-  defp maybe_save_and_assign_scores(socket, _game_state, _player), do: socket
+  defp maybe_save_and_assign_scores(socket), do: socket
 
   defp add_confetti(socket, true), do: socket |> push_event("fire_confetti", %{id: "game-over"})
   defp add_confetti(socket, _), do: socket
