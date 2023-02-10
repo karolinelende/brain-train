@@ -1,6 +1,6 @@
 defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
   use BrainTrainWeb, :component
-  alias BrainTrainWeb.Live.Common.UsernameComponent
+  alias BrainTrainWeb.Live.Common.{LiveComponents, UsernameComponent}
   alias BrainTrain.SpeedSort.GameState
 
   def home(assigns) do
@@ -41,6 +41,8 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
         </button>
       </div>
     </.form>
+
+    <LiveComponents.score_table scores={@scores} all_games={false} />
     """
   end
 
@@ -112,7 +114,18 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
 
   def game_over(assigns) do
     ~H"""
-    <div>Game over!!!</div>
+    <div class="font-medium bg-gray-200 text-2xl rounded-lg py-4 px-4 m-4 text-pink-800 animate-pulse">
+      Game over!
+    </div>
+
+    <div class="font-medium bg-emerald-700 text-2xl rounded-lg py-4 px-4 m-8 text-white">
+      <%= if @is_winner do %>
+        <div class="p-2">🎉 You win!!! 🎉</div>
+      <% end %>
+      <div class="p-2">Your score: <%= @player.score %></div>
+    </div>
+
+    <LiveComponents.score_table scores={@this_game_scores} all_games={false} />
     """
   end
 end

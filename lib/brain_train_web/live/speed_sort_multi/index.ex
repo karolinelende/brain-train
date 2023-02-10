@@ -1,6 +1,6 @@
 defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
   use Phoenix.LiveView, layout: {BrainTrainWeb.LayoutView, :live}
-  alias BrainTrain.SpeedSort
+  alias BrainTrain.{Scores, SpeedSort}
   alias BrainTrain.SpeedSort.{GameServer, GameState, Player}
   alias BrainTrainWeb.Presence
   alias BrainTrainWeb.Live.SpeedSortMulti.{SpeedSortGameStarter, SpeedSortMultiComponents}
@@ -9,8 +9,11 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
 
   def mount(_params, session, socket) do
     if connected?(socket) do
+      Scores.subscribe()
       Presence.join_session(Map.get(session, "username"))
     end
+
+    scores = Scores.get_scores_for_game(@game_title)
 
     socket =
       socket
@@ -19,6 +22,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
       |> assign(game_code: nil)
       |> assign(name: Map.get(session, "username"))
       |> assign(changeset: SpeedSortGameStarter.insert_changeset(%{}))
+      |> assign(scores: scores)
 
     {:ok, socket}
   end
@@ -99,16 +103,47 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
     player_id = socket.assigns.player_id
     {:ok, player} = GameState.find_player(state, player_id)
 
-    updated_socket =
+    socket =
       socket
       |> clear_flash()
       |> assign(:game, state)
       |> assign(:player, player)
+      |> maybe_save_and_assign_scores(state, player)
 
-    {:noreply, updated_socket}
+    {:noreply, socket}
   end
 
   def handle_info(:clear_flash, socket) do
     {:noreply, clear_flash(socket)}
   end
+
+  def handle_info({:score_saved, score}, socket) do
+    socket = update(socket, :scores, fn scores -> Scores.append_and_sort(scores, score) end)
+
+    {:noreply, socket}
+  end
+
+  defp maybe_save_and_assign_scores(
+         socket,
+         %GameState{status: :done, players: players},
+         player
+       ) do
+    %{name: player.name, score: player.score, game: @game_title}
+    |> Scores.insert()
+
+    this_game_scores = Enum.map(players, fn {_player_id, player} -> player end)
+
+    winner_id =
+      this_game_scores
+      |> Enum.max_by(& &1.score)
+      |> Map.get(:id)
+
+    is_winner? = winner_id == player.id
+
+    socket
+    |> assign(this_game_scores: this_game_scores)
+    |> assign(is_winner: is_winner?)
+  end
+
+  defp maybe_save_and_assign_scores(socket, _game_state, _player), do: socket
 end

@@ -1,7 +1,6 @@
 defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
   use BrainTrainWeb, :component
-  alias BrainTrainWeb.Live.Common.LiveComponents
-  alias BrainTrainWeb.Live.Common.UsernameComponent
+  alias BrainTrainWeb.Live.Common.{LiveComponents, UsernameComponent}
 
   def start_game(assigns) do
     ~H"""
