@@ -143,7 +143,11 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
     socket
     |> assign(this_game_scores: this_game_scores)
     |> assign(is_winner: is_winner?)
+    |> add_confetti(is_winner?)
   end
 
   defp maybe_save_and_assign_scores(socket, _game_state, _player), do: socket
+
+  defp add_confetti(socket, true), do: socket |> push_event("fire_confetti", %{id: "game-over"})
+  defp add_confetti(socket, _), do: socket
 end

@@ -24,6 +24,7 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
+import JSConfetti from "js-confetti";
 
 let Hooks = {};
 Hooks.SetSession = {
@@ -48,6 +49,26 @@ Hooks.SetSession = {
           [e.target.name, e.target.value]
         );
       }, this.DEBOUNCE_MS);
+    });
+  },
+};
+
+Hooks.Confetti = {
+  mounted() {
+    const jsConfetti = new JSConfetti();
+    window.confetti = jsConfetti;
+
+    window.addEventListener(`phx:fire_confetti`, (e) => {
+      let el = document.getElementById(e.detail.id);
+      if (el) {
+        liveSocket.execJS(
+          jsConfetti.addConfetti({
+            confettiRadius: 5,
+            confettiNumber: 100,
+            emojis: ["🌈", "✨", "💫", "🎉"],
+          })
+        );
+      }
     });
   },
 };

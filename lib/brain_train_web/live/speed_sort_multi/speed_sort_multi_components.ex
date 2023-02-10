@@ -114,18 +114,20 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
 
   def game_over(assigns) do
     ~H"""
-    <div class="font-medium bg-gray-200 text-2xl rounded-lg py-4 px-4 m-4 text-pink-800 animate-pulse">
-      Game over!
-    </div>
+    <div id="game-over" phx-hook="Confetti">
+      <div class="font-medium bg-gray-200 text-2xl rounded-lg py-4 px-4 m-4 text-pink-800 animate-pulse">
+        Game over!
+      </div>
 
-    <div class="font-medium bg-emerald-700 text-2xl rounded-lg py-4 px-4 m-8 text-white">
-      <%= if @is_winner do %>
-        <div class="p-2">🎉 You win!!! 🎉</div>
-      <% end %>
-      <div class="p-2">Your score: <%= @player.score %></div>
-    </div>
+      <div class="font-medium bg-emerald-700 text-2xl rounded-lg py-4 px-4 m-8 text-white">
+        <%= if @is_winner do %>
+          <div class="p-2">🎉 You win!!! 🎉</div>
+        <% end %>
+        <div class="p-2">Your score: <%= @player.score %></div>
+      </div>
 
-    <LiveComponents.score_table scores={@this_game_scores} all_games={false} />
+      <LiveComponents.score_table scores={@this_game_scores} all_games={false} />
+    </div>
     """
   end
 end
