@@ -87,6 +87,14 @@ topbar.config({ barColors: { 0: "#29d" }, shadowColor: "rgba(0, 0, 0, .3)" });
 window.addEventListener("phx:page-loading-start", (info) => topbar.show());
 window.addEventListener("phx:page-loading-stop", (info) => topbar.hide());
 
+window.addEventListener(`phx:bounce`, (e) => {
+  let el = document.getElementById(e.detail.id);
+  console.log(e);
+  if (el) {
+    liveSocket.execJS(el, el.getAttribute("data-bounce"));
+  }
+});
+
 // connect if there are any LiveViews on the page
 liveSocket.connect();
 

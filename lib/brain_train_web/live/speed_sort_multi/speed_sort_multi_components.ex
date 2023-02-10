@@ -2,6 +2,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
   use BrainTrainWeb, :component
   alias BrainTrainWeb.Live.Common.{LiveComponents, UsernameComponent}
   alias BrainTrain.SpeedSort.GameState
+  alias Phoenix.LiveView.JS
 
   def home(assigns) do
     ~H"""
@@ -56,25 +57,27 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
     </div>
 
     <div>
-      Waiting for others to join...
-      <div>
+      <div class="pb-2">Waiting for others to join...</div>
+      <button
+        phx-click="start_game"
+        class="p-2 mt-1 bg-emerald-700 w-1/2 rounded-lg text-white hover:bg-pink-800 sm:text-sm animate-pulse"
+      >
+        Start game
+      </button>
+      <div class="py-4">
         <h2 class="font-medium text-2xl text-pink-800 py-4">Players</h2>
         <ul>
           <%= for {_id, %{name: name}} <- @game.players do %>
-            <li class="py-2">
-              <%= name %>
-            </li>
+            <li id={"player-#{name}"} data-bounce={animate_bounce("#player-#{name}")}><%= name %></li>
           <% end %>
         </ul>
       </div>
     </div>
-    <button
-      phx-click="start_game"
-      class="p-2 mt-1 bg-gray-800 w-1/2 rounded-lg text-white hover:bg-pink-800 sm:text-sm"
-    >
-      Start game
-    </button>
     """
+  end
+
+  defp animate_bounce(element_id) do
+    JS.transition(%JS{}, "animate-bounce text-pink-800", to: element_id, time: 500)
   end
 
   def board(assigns) do

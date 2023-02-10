@@ -103,11 +103,14 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
     player_id = socket.assigns.player_id
     {:ok, player} = GameState.find_player(state, player_id)
 
+    new_player = get_new_player(socket.assigns.game, state)
+
     socket =
       socket
       |> clear_flash()
       |> assign(:game, state)
       |> assign(:player, player)
+      |> push_event("bounce", %{id: "player-#{new_player}"})
       |> maybe_save_and_assign_scores(state, player)
 
     {:noreply, socket}
@@ -122,6 +125,18 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
 
     {:noreply, socket}
   end
+
+  defp get_new_player(%{players: old_players}, %{players: new_players}) do
+    if length(Enum.into(old_players, [])) == length(Enum.into(new_players, [])) do
+      nil
+    else
+      %{added: added} = MapDiff.diff(old_players, new_players)
+      [player] = Map.values(added)
+      player.name
+    end
+  end
+
+  defp get_new_player(_old_state, _new_stage), do: nil
 
   defp maybe_save_and_assign_scores(
          socket,
