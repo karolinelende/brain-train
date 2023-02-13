@@ -169,7 +169,10 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
     %{name: player.name, score: player.score, game: @game_title}
     |> Scores.insert()
 
-    this_game_scores = Enum.map(players, fn {_player_id, player} -> player end)
+    this_game_scores =
+      players
+      |> Enum.map(fn {_player_id, player} -> player end)
+      |> Enum.sort_by(& &1.score, :desc)
 
     winner_id =
       this_game_scores
