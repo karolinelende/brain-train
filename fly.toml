@@ -1,4 +1,4 @@
-# fly.toml file generated for brain-train on 2023-02-13T17:39:48Z
+# fly.toml file generated for brain-train on 2023-02-17T15:40:01Z
 
 app = "brain-train"
 kill_signal = "SIGTERM"

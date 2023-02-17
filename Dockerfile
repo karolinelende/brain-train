@@ -22,7 +22,7 @@ ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 FROM ${BUILDER_IMAGE} as builder
 
 # install build dependencies
-RUN apt-get update -y && apt-get install -y build-essential git \
+RUN apt-get update -y && apt-get install -y build-essential git curl \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # prepare build dir
@@ -51,6 +51,21 @@ COPY priv priv
 COPY lib lib
 
 COPY assets assets
+
+ENV NODE_VERSION=16.17.0
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+RUN node --version
+RUN npm --version
+
+# install npm deps before running esbuild
+RUN npm install --prefix ./assets
+# RUN npm install
+
 
 # compile assets
 RUN mix assets.deploy
@@ -90,6 +105,10 @@ COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/brain_train .
 USER nobody
 
 CMD ["/app/bin/server"]
+# Appended by flyctl
+ENV ECTO_IPV6 true
+ENV ERL_AFLAGS "-proto_dist inet6_tcp"
+
 # Appended by flyctl
 ENV ECTO_IPV6 true
 ENV ERL_AFLAGS "-proto_dist inet6_tcp"
