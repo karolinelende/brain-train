@@ -5,6 +5,7 @@ BrainTrain is a (work in progress) cognitive games platform built in LiveView.
 Games currently built:
 
 - SpeedSort (a 1-player game requiring you to sort numbers)
+- SpeedSort Multi (as above, but competing against your friends!)
 - TicTacToe (a 2-player game based on the classic three-in-a-row)
 
 ## How to run
