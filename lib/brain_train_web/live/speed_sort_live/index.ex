@@ -45,10 +45,6 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
     {:noreply, socket}
   end
 
-  def handle_info(:clear_flash, socket) do
-    {:noreply, clear_flash(socket)}
-  end
-
   def handle_info({:score_saved, score}, socket) do
     socket = update(socket, :scores, fn scores -> Scores.append_and_sort(scores, score) end)
 
@@ -56,8 +52,6 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   end
 
   defp complete_game(%{assigns: %{name: name, score: score}} = socket) do
-    Process.send_after(self(), :clear_flash, 1000)
-
     %{name: name, score: score, game: @game_title}
     |> Scores.insert()
 
@@ -107,8 +101,6 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   end
 
   defp completed_round(socket, score) do
-    Process.send_after(self(), :clear_flash, 1000)
-
     elapsed_time =
       DateTime.diff(
         DateTime.utc_now() |> Timex.set(microsecond: 0),
@@ -116,7 +108,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
       )
 
     socket
-    |> put_flash(:info, "Good job!")
+    |> push_event("win", %{id: "grid"})
     |> assign(score: SpeedSort.calculate_score(score, elapsed_time, :correct))
     |> assign(numbers: SpeedSort.generate_list_of_numbers())
     |> assign(round_start_time: DateTime.utc_now())
@@ -124,10 +116,8 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   end
 
   defp failed_round(socket, score) do
-    Process.send_after(self(), :clear_flash, 1000)
-
     socket
-    |> put_flash(:error, "Wrong number!")
+    |> push_event("shake", %{id: "grid"})
     |> assign(score: SpeedSort.calculate_score(score, nil, :incorrect))
     |> assign(numbers: SpeedSort.generate_list_of_numbers())
     |> assign(clicks: 0)

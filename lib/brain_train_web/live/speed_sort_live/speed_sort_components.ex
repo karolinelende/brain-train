@@ -1,6 +1,7 @@
 defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
   use BrainTrainWeb, :component
   alias BrainTrainWeb.Live.Common.{LiveComponents, UsernameComponent}
+  alias Phoenix.LiveView.JS
 
   def start_game(assigns) do
     ~H"""
@@ -42,7 +43,12 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
         <div class="px-1">seconds</div>
       </div>
 
-      <div class="grid grid-cols-3 gap-12 p-8 rounded-lg bg-pink-50">
+      <div
+        class="grid grid-cols-3 gap-12 p-8 rounded-lg bg-pink-50"
+        id="grid"
+        data-shake={animate_shake("#grid")}
+        data-win={animate_win("#grid")}
+      >
         <%= for {number, index} <- @numbers do %>
           <%= if @clicks > index do %>
             <div class="w-16 h-16"></div>
@@ -65,5 +71,13 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents do
       Your score: <%= @score %>
     </div>
     """
+  end
+
+  defp animate_shake(element_id) do
+    JS.transition(%JS{}, "animate-shake bg-pink-200", to: element_id, time: 300)
+  end
+
+  defp animate_win(element_id) do
+    JS.transition(%JS{}, "animate-pingy bg-emerald-100", to: element_id, time: 300)
   end
 end

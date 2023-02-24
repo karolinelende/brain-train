@@ -120,7 +120,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
   end
 
   defp animate_shake(element_id) do
-    JS.transition(%JS{}, "animate-shake bg-pink-100", to: element_id, time: 300)
+    JS.transition(%JS{}, "animate-shake bg-pink-200", to: element_id, time: 300)
   end
 
   defp animate_win(element_id) do
