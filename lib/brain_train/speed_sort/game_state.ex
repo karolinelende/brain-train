@@ -78,8 +78,6 @@ defmodule BrainTrain.SpeedSort.GameState do
      }}
   end
 
-  def start(%GameState{players: _player}), do: {:error, "Only one player"}
-
   defp set_round_start_time({id, player}) do
     {id, %Player{player | round_start_time: DateTime.utc_now()}}
   end
