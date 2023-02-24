@@ -51,7 +51,7 @@
                 >
                 </lord-icon>
               </div>
-              <div class="hidden sm:ml-6 sm:block">
+              <div class="ml-6 block">
                 <div class="flex space-x-4">
                   <%= active_link(@conn, "BrainTrain",
                     class:
@@ -60,23 +60,23 @@
                   ) %>
                   <%= active_link(@conn, "SpeedSort",
                     class:
-                      "hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium",
+                      "hidden md:block hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium",
                     to: Routes.live_path(@conn, BrainTrainWeb.Live.SpeedSortLive.Index)
                   ) %>
                   <%= active_link(@conn, "SpeedSort Multi",
                     class:
-                      "hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium",
+                      "hidden md:block hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium",
                     to: Routes.live_path(@conn, BrainTrainWeb.Live.SpeedSortMulti.Index)
                   ) %>
                   <%= active_link(@conn, "TicTacToe",
                     class:
-                      "hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium",
+                      "hidden md:block hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium",
                     to: Routes.live_path(@conn, BrainTrainWeb.Live.TicTacToe.Index)
                   ) %>
                   <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
                     <.link
                       href={Routes.live_dashboard_path(@conn, :home)}
-                      class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                      class="hidden md:block text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     >
                       LiveDashboard
                     </.link>
