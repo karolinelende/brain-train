@@ -12,16 +12,19 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
       <div>
         <%= error_tag(f, :name) %>
       </div>
-      <label for="game_code" class="block text-sm font-medium text-gray-700 text-left mt-8">
+      <label
+        for="game_code"
+        class="block text-xs sm:text-sm font-medium text-gray-700 text-center sm:text-left mt-8"
+      >
         Game code (leave empty to start new game)
       </label>
-      <div class="flex justify-between items-baseline">
-        <div class="relative mt-1 w-full rounded-md mr-2">
+      <div class="flex justify-center sm:justify-between items-baseline">
+        <div class="w-1/2 sm:w-full relative mt-1 rounded-md mr-2">
           <input
             type="text"
             name="game_code"
             id="game_code"
-            class="rounded-md w-full border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 sm:text-sm"
+            class="text-xs sm:text-base w-3/4 sm:w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
             value={@game_code}
           />
           <div>
@@ -30,7 +33,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
         </div>
         <button
           type="submit"
-          class="p-2 mt-1 bg-gray-800 w-1/2 rounded-lg text-white hover:bg-pink-800 sm:text-sm"
+          class="w-1/4 sm:w-1/2 text-xs sm:text-base p-2 mt-1 bg-gray-800 rounded-lg text-white hover:bg-pink-800"
         >
           Join game
         </button>
@@ -43,7 +46,7 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
 
   def waiting_room(assigns) do
     ~H"""
-    <p class="mt-8 text-center font-medium">
+    <p class="text-sm sm:text-base px-4 sm:px-0 mt-8 text-center font-medium">
       Tell friends to use this game code to join you!
     </p>
     <div class="mt-2 text-8xl text-pink-800 text-center font-semibold">
@@ -52,7 +55,9 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.SpeedSortMultiComponents do
 
     <div>
       <div class="pb-2">Waiting for others to join...</div>
+      <div :if={!@player.is_host} class="pb-2">Waiting for host to start the game...</div>
       <button
+        :if={@player.is_host}
         phx-click="start_game"
         class="p-2 mt-1 bg-emerald-700 w-1/2 rounded-lg text-white hover:bg-pink-800 sm:text-sm animate-pulse"
       >

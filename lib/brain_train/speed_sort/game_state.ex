@@ -35,6 +35,10 @@ defmodule BrainTrain.SpeedSort.GameState do
     {:error, "Can only join a created game"}
   end
 
+  def join_game(%GameState{status: status}, %Player{}) when status in [:playing, :done] do
+    {:error, "Game already started"}
+  end
+
   def join_game(%GameState{players: players} = state, %Player{} = player) do
     {:ok, %GameState{state | players: Map.put(players, player.id, player)}}
   end

@@ -31,7 +31,8 @@ defmodule BrainTrainWeb.Live.SpeedSortMulti.Index do
 
     with {:ok, starter} <- SpeedSortGameStarter.create(params),
          {:ok, game_code} <- SpeedSortGameStarter.get_game_code(starter),
-         {:ok, player} <- Player.create(%{name: socket.assigns.name}),
+         {:ok, player} <-
+           Player.create(%{name: socket.assigns.name, is_host: starter.type == :start}),
          {:ok, _} <- GameServer.start_or_join(game_code, player) do
       Phoenix.PubSub.subscribe(BrainTrain.PubSub, "game:#{game_code}")
       send(self(), :load_game_state)

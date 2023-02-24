@@ -25,8 +25,8 @@ defmodule BrainTrain.Scores do
     [new_score | existing_scores] |> Enum.sort_by(& &1.score, :desc)
   end
 
-  def get_scores_for_game(game) do
-    Repo.all(from s in Score, order_by: [desc: s.score], where: s.game == ^game)
+  def get_scores_for_game(game, limit \\ 10) do
+    Repo.all(from s in Score, order_by: [desc: s.score], where: s.game == ^game, limit: ^limit)
   end
 
   def insert(attrs) do

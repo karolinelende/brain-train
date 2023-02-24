@@ -4,7 +4,7 @@ defmodule BrainTrainWeb.Live.SpeedSortLive.Index do
   alias BrainTrainWeb.Live.SpeedSortLive.SpeedSortComponents
   alias BrainTrainWeb.Presence
 
-  @game_duration 10
+  @game_duration 60
   @game_title SpeedSort.db_name()
 
   def mount(_params, session, socket) do

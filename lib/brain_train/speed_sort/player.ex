@@ -13,6 +13,7 @@ defmodule BrainTrain.SpeedSort.Player do
     field :round_start_time, :utc_datetime_usec
     field :numbers, {:array, :integer}
     field :previous_round_result, :string
+    field :is_host, :boolean
   end
 
   @type t :: %Player{
@@ -22,10 +23,11 @@ defmodule BrainTrain.SpeedSort.Player do
           round: :integer,
           round_start_time: nil | :utc_datetime_usec,
           numbers: nil | list(:integer),
-          previous_round_result: nil | String.t()
+          previous_round_result: nil | String.t(),
+          is_host: :boolean
         }
 
-  @fields [:name, :score, :round, :clicks, :previous_round_result]
+  @fields [:name, :score, :round, :clicks, :previous_round_result, :is_host]
 
   def insert_changeset(attrs) do
     changeset(%Player{}, attrs)
