@@ -83,16 +83,8 @@ defmodule BrainTrain.SpeedSort.GameServer do
     GenServer.call(via_tuple(game_code), {:click, player_id, index})
   end
 
-  def round_complete(game_code, player_id, square) do
-    GenServer.call(via_tuple(game_code), {:round_complete, player_id, square})
-  end
-
   def get_current_game_state(game_code) do
     GenServer.call(via_tuple(game_code), :current_state)
-  end
-
-  def restart(game_code) do
-    GenServer.call(via_tuple(game_code), :restart)
   end
 
   @impl true

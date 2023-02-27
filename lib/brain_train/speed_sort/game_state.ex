@@ -113,11 +113,11 @@ defmodule BrainTrain.SpeedSort.GameState do
   defp player_completed_round?(player), do: player.clicks == SpeedSort.list_length() - 1
   defp correct_index_clicked?(player, index), do: index == player.clicks
 
-  def round_complete(
-        %GameState{status: :playing} = state,
-        %Player{} = player,
-        result
-      ) do
+  defp round_complete(
+         %GameState{status: :playing} = state,
+         %Player{} = player,
+         result
+       ) do
     existing_score = player.score
     current_round = player.round
 
@@ -144,16 +144,15 @@ defmodule BrainTrain.SpeedSort.GameState do
     {:ok, %GameState{state | players: updated_players}}
   end
 
-  def round_complete(
-        %GameState{status: :done} = _state,
-        %Player{} = _player,
-        _result,
-        _elapsed_time
-      ) do
+  defp round_complete(
+         %GameState{status: :done} = _state,
+         %Player{} = _player,
+         _result
+       ) do
     {:error, "Game is over!"}
   end
 
-  def update_index(state, player) do
+  defp update_index(state, player) do
     updated_player = %Player{player | clicks: player.clicks + 1}
     updated_players = Map.put(state.players, player.id, updated_player)
 
